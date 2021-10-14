@@ -1,0 +1,78 @@
+%****************************************************%
+%  The MIF code example shown here is from the book  %
+%  Computer Principles and Design in Verilog HDL     %
+%  by Yamin Li, published by A JOHN WILEY & SONS     %
+%****************************************************%
+DEPTH = 64;          % Memory depth and width are required                 %
+WIDTH = 32;          % Enter a decimal number                              %
+ADDRESS_RADIX = HEX; % Address and value radixes are optional              %
+DATA_RADIX = HEX;    % Enter BIN, DEC, HEX, or OCT; unless                 %
+                     % otherwise specified, radixes = HEX                  %
+CONTENT
+BEGIN
+[0..3f] : 00000000; % Range--Every address from 0 to 3f = 00000000         %
+ 0 : 00000820; % (00)         add    $1,  $0, $0  # address of data[0]     %
+ 1 : c4200000; % (04)         lwc1   f0,   0($1)  # load fp data           %
+ 2 : c4210050; % (08)         lwc1   f1,  80($1)  # load fp data           %
+ 3 : c4220054; % (0c)         lwc1   f2,  84($1)  # load fp data           %
+ 4 : c4230058; % (10)         lwc1   f3,  88($1)  # load fp data           %
+ 5 : c424005c; % (14)         lwc1   f4,  92($1)  # load fp data           %
+ 6 : 46002100; % (18)         add.s  f4,  f4, f0  # f4: stall 1            %
+ 7 : 460418c1; % (1c)         sub.s  f3,  f3, f4  # f4: stall 2            %
+ 8 : 46022082; % (20)         mul.s  f2,  f4, f2  # mul                    %
+ 9 : 46040842; % (24)         mul.s  f1,  f1, f4  # mul                    %
+ a : e4210070; % (28)         swc1   f1, 112($1)  # f1: stall 1            %
+ b : e4220074; % (2c)         swc1   f2, 116($1)  # store fp data          %
+ c : e4230078; % (30)         swc1   f3, 120($1)  # store fp data          %
+ d : e424007c; % (34)         swc1   f4, 124($1)  # store fp data          %
+ e : 20020004; % (38)         addi   $2,  $0,  4  # counter                %
+ f : c4230000; % (3c) l3:     lwc1   f3,   0($1)  # load fp data           %
+10 : c4210050; % (40)         lwc1   f1,  80($1)  # load fp data           %
+11 : 46030840; % (44)         add.s  f1,  f1, f3  # stall 1                %
+12 : 46030841; % (48)         sub.s  f1,  f1, f3  # stall 2                %
+13 : e4210030; % (4c)         swc1   f1,  48($1)  # stall 1                %
+14 : c4050004; % (50)         lwc1   f5,  04($0)  # load fp data           %
+15 : c4060008; % (54)         lwc1   f6,  08($0)  # load fp data           %
+16 : c408000c; % (58)         lwc1   f8,  12($0)  # load fp data           %
+17 : 460629c3; % (5c)         div.s  f7,  f5, f6  # div                    %
+18 : 46004244; % (60)         sqrt.s f9,  f8      # sqrt                   %
+19 : 46004a84; % (64)         sqrt.s f10, f9      # sqrt                   %
+1a : 2042ffff; % (68)         addi   $2,  $2, -1  # counter - 1            %
+1b : 1440fff3; % (6c)         bne    $2,  $0, l3  # finish?                %
+1c : 20210004; % (70)         addi   $1,  $1,  4  # address+4, delay slot  %
+1d : 3c010000; % (74) iu_test:lui  $1, 0          # address of data[0]     %
+1e : 34240050; % (78)         ori  $4, $1, 80     # address of data[0]     %
+1f : 0c000038; % (7c) call:   jal  sum            # call function          %
+20 : 20050004; % (80) dslot1: addi $5, $0,  4     # delyed slot(ds)        %
+21 : ac820000; % (84) return: sw   $2, 0($4)      # store result           %
+22 : 8c890000; % (88)         lw   $9, 0($4)      # check sw               %
+23 : 01244022; % (8c)         sub  $8, $9, $4     # sub: $8 <-- $9 - $4    %
+24 : 20050003; % (90)         addi $5, $0,  3     # counter                %
+25 : 20a5ffff; % (94) loop2:  addi $5, $5, -1     # counter - 1            %
+26 : 34a8ffff; % (98)         ori  $8, $5, 0xffff # zero-extend: 0000ffff  %
+27 : 39085555; % (9c)         xori $8, $8, 0x5555 # zero-extend: 0000aaaa  %
+28 : 2009ffff; % (a0)         addi $9, $0, -1     # sign-extend: ffffffff  %
+29 : 312affff; % (a4)         andi $10, $9, 0xffff# zero-extend: 0000ffff  %
+2a : 01493025; % (a8)         or   $6, $10, $9    # or:  ffffffff          %
+2b : 01494026; % (ac)         xor  $8, $10, $9    # xor: ffff0000          %
+2c : 01463824; % (b0)         and  $7, $10, $6    # and: 0000ffff          %
+2d : 10a00003; % (b4)         beq  $5, $0, shift  # if $5 = 0, goto shift  %
+2e : 00000000; % (b8) dslot2: nop                 # ds                     %
+2f : 08000025; % (bc)         j    loop2          # jump loop2             %
+30 : 00000000; % (c0) dslot3: nop                 # ds                     %
+31 : 2005ffff; % (c4) shift:  addi $5, $0, -1     # $5   = ffffffff        %
+32 : 000543c0; % (c8)         sll  $8, $5, 15     # <<  15 = ffff8000      %
+33 : 00084400; % (cc)         sll  $8, $8, 16     # <<  16 = 80000000      %
+34 : 00084403; % (d0)         sra  $8, $8, 16     # >>> 16 = ffff8000      %
+35 : 000843c2; % (d4)         srl  $8, $8, 15     # >>  15 = 0001ffff      %
+36 : 08000036; % (d8) finish: j    finish         # dead loop              %
+37 : 00000000; % (dc) dslot4: nop                 # ds                     %
+38 : 00004020; % (e0) sum:    add  $8, $0, $0     # sum                    %
+39 : 8c890000; % (e4) loop:   lw   $9, 0($4)      # load data              %
+3a : 01094020; % (e8)         add  $8, $8, $9     # sum                    %
+3b : 20a5ffff; % (ec)         addi $5, $5, -1     # counter - 1            %
+3c : 14a0fffc; % (f0)         bne  $5, $0, loop   # finish?                %
+3d : 20840004; % (f4) dslot5: addi $4, $4,  4     # address + 4, ds        %
+3e : 03e00008; % (f8)         jr   $31            # return                 %
+3f : 00081000; % (fc) dslot6: sll  $2, $8, 0      # move res. to v0, ds    %
+END ;

@@ -1,0 +1,43 @@
+// Single port ram
+// Supports one write or read per cycle
+// Writes have priority over reads
+// data_out must be set to high impedance (z) if
+//     there are no read or writes (ram is inactive)
+//     there is a write
+
+module ram_reference_model #(parameter DATA_WIDTH=8,
+                             parameter N_WORDS=16)
+                            (input  logic                       clk,
+                             input  logic                       we,
+                             input  logic                       re,
+                             input  logic [$clog2(N_WORDS)-1:0] address,
+                             input  logic      [DATA_WIDTH-1:0] data_in,
+                             output logic      [DATA_WIDTH-1:0] data_out
+                            );
+// The following lines are intentionally encrypted
+`pragma protect begin_protected
+`pragma protect version = 1
+`pragma protect encrypt_agent = "ModelSim" , encrypt_agent_info = "10.5b"
+`pragma protect key_keyowner = "Mentor Graphics Corporation" , key_keyname = "MGC-VERIF-SIM-RSA-2"
+`pragma protect key_method = "rsa"
+`pragma protect encoding = ( enctype = "base64" , line_length = 64 , bytes = 256 )
+`pragma protect key_block
+USIgSL4nUmc5qc4XFdMq9HF/TTJkdQdMZ+o93fEjSShfmzoks8lkdSfnlNMBZgvJ
+mMcmaa/lMsNWcu08/Aodea28/sXiQC3r90APJWCp/U4beMrHkqIvB85AUNMYyTLg
+TMSC7RhEEfwu578E/VXDEWqqPD0pCdV5iwqOv4DfUSc8ss4OZFxfYxKGx6eMegJo
++TvDmQ1nH4OTqLsFtrxjO6XeAROqW3/xZXErKO8KjOYzfCPF9+ITjNPgwaeP1hR8
+K0+wZIWyGN5DzoyQvYbALkmcAIk2/ZPSAzbL9qDt6GPPSM7w/p+pxQHdES9T3FxW
+Cec4TK0TOeUIW7Hm5L9AIQ==
+`pragma protect data_method = "aes128-cbc"
+`pragma protect encoding = ( enctype = "base64" , line_length = 64 , bytes = 368 )
+`pragma protect data_block
+Eiv7Lerk2AClWEsv5YTzP8wJGJIZFOranifrSmvhNhQ7WpFQ7MHytuPZWX9oAPIU
+MF8eGLOXHLvf+g8OK7HrcLXjm2Yb01mPDDQjAE0JOHwI1sArpb+Q7phuvnCtWkfC
+PPEtFNKKqQokh+h8hJ+ZuijtD+slHY8Hy8ycFkjq2uu+7l9LRCzgaVUfjMKRbLgj
+R6oTtV38hj7hnqMESQ/4xzNh5YKF4+hX0Kve98hBIdO01/A30e1GU6rClkX8lGGW
+sNrn+GpEy7NoD22pD2xggu7u/r5jOFOsJRVQEzcSUcc3gJNXPTz/OGd1zVQzdx2o
+4pbQa9l2lvddqFGiHjjIRlJ9Ctv175u8FU6jb7kcNBl7RFaiYhu4r9GtywzeThga
+jHYlqDdS1A3ZfWSm41b2OvaE/op+L61BWR9vqW6Tr94AJSdPTU4eUl9Zl9R2DfGg
+7ukDu4orsLYW7uy9VmQyw+HQCGRW4bde+OlhkFwH/xc=
+`pragma protect end_protected
+endmodule

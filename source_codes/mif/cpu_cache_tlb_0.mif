@@ -1,0 +1,91 @@
+%****************************************************%
+%  The MIF code example shown here is from the book  %
+%  Computer Principles and Design in Verilog HDL     %
+%  by Yamin Li, published by A JOHN WILEY & SONS     %
+%****************************************************%
+DEPTH = 128;         % Memory depth and width are required                 %
+WIDTH = 32;          % Enter a decimal number                              %
+ADDRESS_RADIX = HEX; % Address and value radixes are optional              %
+DATA_RADIX = HEX;    % Enter BIN, DEC, HEX, or OCT; unless                 %
+CONTENT              % otherwise specified, radixes = HEX                  %
+BEGIN
+    % physical address = 0x0000_0000                                       %
+    % reset entry,  va = 0x8000_0000                                       %
+ 0: 08000070; %(80000000) j    initialize_itlb  # jump to init itlb        %
+ 1: 00000000; %(80000004) nop                                              %
+    % exc_base:                                 # exception handlerentry   %
+ 2: 401a6800; %(80000008) mfc0 $26, c0_cause    # read cp0 cause reg       %
+ 3: 335a001c; %(8000000c) andi $26, $26, 0x1c   # get exccode, 3 bits      %
+ 4: 3c1b8000; %(80000010) lui  $27, 0x8000      #                          %
+ 5: 037ad825; %(80000014) or   $27, $27, $26    #                          %
+ 6: 8f7b0040; %(80000018) lw   $27, j_table($27)# get addr from j table    %
+ 7: 00000000; %(8000001c) nop                   #                          %
+ 8: 03600008; %(80000020) jr   $27              # jump to that address     %
+ 9: 00000000; %(80000024) nop                   #                          %
+[a..f]: 0;
+    % j_table:          # address table for exception and interrupt        %
+10: 80000000; %(80000040) int_entry  # 0. address for interrupt            %
+11: 80000000; %(80000044) sys_entry  # 1. address for syscall              %
+12: 80000000; %(80000048) uni_entry  # 2. address for unimpl. inst.        %
+13: 80000000; %(8000004c) ovf_entry  # 3. address for overflow             %
+14: 800000c0; %(80000050) itlb_entry # 4. address for itlb miss            %
+15: 80000140; %(80000054) dtlb_entry # 5. address for dtlb miss            %
+16: 80000000; %(80000058)                                                  %
+17: 80000000; %(8000005c)                                                  %
+[18..2f]: 0;
+    % itlb_entry:                                                          %
+30: 3c1b8000; %(800000c0) lui  $27, 0x8000      # 0x800001f8: counter      %
+31: 8f7a01f8; %(800000c4) lw   $26, 0x1f8($27)  # load itlb index counter  %
+32: 235a0001; %(800000c8) addi $26, $26, 1      # index + 1                %
+33: 335a0007; %(800000cc) andi $26, $26, 7      # 3-bit index              %
+34: af7a01fc; %(800000d0) sw   $26, 0x1fc($27)  # store index              %
+35: 3c1b0000; %(800000d4) lui  $27, 0x0000      # itlb tag                 %
+36: 037ad025; %(800000d8) or   $26, $27, $26    # itlb tag and index       %
+37: 409a0000; %(800000dc) mtc0 $26, c0_index    # move to cp0 index        %
+38: 401b2000; %(800000e0) mfc0 $27, c0_context  # address of pte           %
+39: 8f7a0000; %(800000e4) lw   $26, 0x0($27)    # pte                      %
+3a: 409a1000; %(800000e8) mtc0 $26, c0_entry_lo # move to cp0 entry_lo     %
+3b: 001bd280; %(800000ec) sll  $26, $27, 10     # get bad vpn              %
+3c: 001ad302; %(800000f0) srl  $26, $26, 12     # for cp0 entry_hi         %
+3d: 409a4800; %(800000f4) mtc0 $26, c0_entry_hi # move to entry_hi         %
+3e: 42000002; %(800000f8) tlbwi                 # update itlb              %
+3f: 42000018; %(800000fc) eret                  # return from exception    %
+40: 00000000; %(80000100) nop                   #                          %
+[41..4f]: 0;
+    % dtlb_entry:                                                          %
+50: 3c1b8000; %(80000140) lui  $27, 0x8000      # 0x800001fc: counter      %
+51: 8f7a01fc; %(80000144) lw   $26, 0x1fc($27)  # load dtlb index counter  %
+52: 235a0001; %(80000148) addi $26, $26, 1      # index + 1                %
+53: 335a0007; %(8000014c) andi $26, $26, 7      # 3-bit index              %
+54: af7a01fc; %(80000150) sw   $26, 0x1fc($27)  # store index              %
+55: 3c1b4000; %(80000154) lui  $27, 0x4000      # dtlb tag                 %
+56: 037ad025; %(80000158) or   $26, $27, $26    # dtlb tag and index       %
+57: 409a0000; %(8000015c) mtc0 $26, c0_index    # move to cp0 index        %
+58: 401b2000; %(80000160) mfc0 $27, c0_context  # address of pte           %
+59: 8f7a0000; %(80000164) lw   $26, 0x0($27)    # pte                      %
+5a: 409a1000; %(80000168) mtc0 $26, c0_entry_lo # move to cp0 entry_lo     %
+5b: 001bd280; %(8000016c) sll  $26, $27, 10     # get bad vpn              %
+5c: 001ad302; %(80000170) srl  $26, $26, 12     # for cp0 entry_hi         %
+5d: 409a4800; %(80000174) mtc0 $26, c0_entry_hi # move to entry_hi         %
+5e: 42000002; %(80000178) tlbwi                 # update dtlb              %
+5f: 42000018; %(8000017c) eret                  # return from exception    %
+60: 00000000; %(80000180) nop                   #                          %
+[61..6f]: 0;
+    % initialize_itlb:                                                     %
+70: 40800000; %(800001c0) mtc0 $0,  c0_index    # c0_index <-- 0 (itlb[0]) %
+71: 3c1b9000; %(800001c4) lui  $27, 0x9000      # page table base          %
+72: 8f7a0000; %(800001c8) lw   $26, 0x0($27)    # 1st entry of page table  %
+73: 409a1000; %(800001cc) mtc0 $26, c0_entry_lo # c0_entrylo <-- v,d,c,pfn %
+74: 3c1a0000; %(800001d0) lui  $26, 0x0         # va (=0) for c0_entry_hi  %
+75: 409a4800; %(800001d4) mtc0 $26, c0_entry_hi # c0_entry_hi <-- vpn (0)  %
+76: 42000002; %(800001d8) tlbwi                 # write itlb for user prog %
+77: 409b2000; %(800001dc) mtc0 $27, c0_context  # c0_context <-- ptebase   %
+78: 341a003f; %(800001e0) ori  $26, $0, 0x3f    # enable exceptions        %
+79: 409a6000; %(800001e4) mtc0 $26, c0_status   # c0_status <-- 0..0111111 %
+7a: 3c010000; %(800001e8) lui  $1, 0x0          # va = 0x0000_0000         %
+7b: 00200008; %(800001ec) jr   $1               # jump to user program     %
+7c: 00000000; %(800001f0) nop                   #                          %
+7d: 00000000; %(800001f4) nop                   #                          %
+7e: 00000000; %(800001f8) .data 0               # itlb index counter       %
+7f: 00000000; %(800001fc) .data 0               # dtlb index counter       %
+END ;

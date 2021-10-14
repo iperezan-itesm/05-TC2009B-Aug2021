@@ -1,0 +1,233 @@
+
+% Macro for instering in-line code
+\def\code#1{\texttt{#1}}
+\def\codekw#1{\textcolor{blue}{\texttt{#1}}}
+\def\acbf#1{\alertblue{\ac{#1}}}
+
+%\renewcommand{\url}[1]{\textcolor{blue}{\url{#1}}}
+\newcommand{\urlblue}[1]{\textcolor{blue}{\url{#1}}}
+
+\newcommand{\VDD}{\ensuremath{\mathrm{V_{DD}}}\xspace}
+\newcommand{\VDDX}[1]{\ensuremath{\mathrm{V_{DD#1}}}\xspace}
+\newcommand{\Vsupply}[1]{\VDD = #1~V\xspace}
+\newcommand{\Tclk}{\ensuremath{\mathrm{T_{clk}}}\xspace}
+\newcommand{\TclkX}[1]{\ensuremath{\mathrm{T_{clk#1}}}\xspace}
+\newcommand{\Tclkns}[1]{\Tclk = #1~ns\xspace}
+\newcommand{\fclk}{\ensuremath{f_\mathrm{{clk}}}\xspace}
+\newcommand{\fclkX}[1]{\ensuremath{f_\mathrm{{clk#1}}}\xspace}
+
+% For file names required in assignments
+\newcommand{\colorfilename}[1]{\code{\textcolor{purple}{#1}}\xspace}
+
+\newcommand{\module}{\code{\textcolor{blue}{module}}\xspace}
+\newcommand{\parameter}{\code{\textcolor{blue}{parameter}}\xspace}
+\newcommand{\logic}{\code{\textcolor{blue}{logic}}\xspace}
+\newcommand{\typedef}{\code{\textcolor{blue}{typedef}}\xspace}
+\newcommand{\package}{\code{\textcolor{blue}{package}}\xspace}
+\newcommand{\enum}{\code{\textcolor{blue}{enum}}\xspace}
+\newcommand{\assign}{\code{\textcolor{blue}{assign}}\xspace}
+
+\newcommand{\codeblack}[1]{\code{\textcolor{black}{#1}}\xspace}
+\newcommand{\codeblue}[1]{\code{\textcolor{blue}{#1}}\xspace}
+\newcommand{\codebrown}[1]{\code{\textcolor{brown}{#1}}\xspace}
+\newcommand{\codecyan}[1]{\code{\textcolor{cyan}{#1}}\xspace}
+\newcommand{\codedarkgray}[1]{\code{\textcolor{darkgray}{#1}}\xspace}
+\newcommand{\codegray}[1]{\code{\textcolor{gray}{#1}}\xspace}
+\newcommand{\codegreen}[1]{\code{\textcolor{green}{#1}}\xspace}
+\newcommand{\codedarkgreen}[1]{\code{\textcolor{green!50!black}{#1}}\xspace}
+\newcommand{\codelightgray}[1]{\code{\textcolor{lightgray}{#1}}\xspace}
+\newcommand{\codelime}[1]{\code{\textcolor{lime}{#1}}\xspace}
+\newcommand{\codemagenta}[1]{\code{\textcolor{magenta}{#1}}\xspace}
+\newcommand{\codeolive}[1]{\code{\textcolor{olive}{#1}}\xspace}
+\newcommand{\codeorange}[1]{\code{\textcolor{orange}{#1}}\xspace}
+\newcommand{\codepink}[1]{\code{\textcolor{pink}{#1}}\xspace}
+\newcommand{\codepurple}[1]{\code{\textcolor{purple}{#1}}\xspace}
+\newcommand{\codered}[1]{\code{\textcolor{red}{#1}}\xspace}
+\newcommand{\codeteal}[1]{\code{\textcolor{teal}{#1}}\xspace}
+\newcommand{\codedarkteal}[1]{\code{\textcolor{teal!99!black}{#1}}\xspace}
+\newcommand{\codeviolet}[1]{\code{\textcolor{violet}{#1}}\xspace}
+\newcommand{\codewhite}[1]{\code{\textcolor{white}{#1}}\xspace}
+\newcommand{\codeyellow}[1]{\code{\textcolor{yellow}{#1}}\xspace}
+
+\newcommand{\ModelSim}{ModelSim\xspace}
+\newcommand{\Quartus}{Quartus\xspace}
+
+% CPU performance math
+\newcommand{\CPImath}{\ensuremath{\mathrm{CPI}}\xspace}
+\newcommand{\Itime}{\ensuremath{\mathrm{I}_{t}}\xspace}
+% Macro for representing hex numbers
+\newcommand{\hex}[1]{\code{#1h}\xspace}
+
+% Colours
+\newcommand{\alertblack}[1]{\textbf{\textcolor{black}{#1}}}
+\newcommand{\alertblue}[1]{\textbf{\textcolor{blue}{#1}}}
+\newcommand{\alertbrown}[1]{\textbf{\textcolor{brown}{#1}}}
+\newcommand{\alertcyan}[1]{\textbf{\textcolor{cyan}{#1}}}
+\newcommand{\alertdarkgray}[1]{\textbf{\textcolor{darkgray}{#1}}}
+\newcommand{\alertgray}[1]{\textbf{\textcolor{gray}{#1}}}
+\newcommand{\alertgreen}[1]{\textbf{\textcolor{green}{#1}}}
+\newcommand{\alertdarkgreen}[1]{\textbf{\textcolor{green!50!black}{#1}}}
+\newcommand{\alertlightgray}[1]{\textbf{\textcolor{lightgray}{#1}}}
+\newcommand{\alertlime}[1]{\textbf{\textcolor{lime}{#1}}}
+\newcommand{\alertmagenta}[1]{\textbf{\textcolor{magenta}{#1}}}
+\newcommand{\alertolive}[1]{\textbf{\textcolor{olive}{#1}}}
+\newcommand{\alertorange}[1]{\textbf{\textcolor{orange}{#1}}}
+\newcommand{\alertpink}[1]{\textbf{\textcolor{pink}{#1}}}
+\newcommand{\alertpurple}[1]{\textbf{\textcolor{purple}{#1}}}
+\newcommand{\alertred}[1]{\textbf{\textcolor{red}{#1}}}
+\newcommand{\alertteal}[1]{\textbf{\textcolor{teal}{#1}}}
+\newcommand{\alertviolet}[1]{\textbf{\textcolor{violet}{#1}}}
+\newcommand{\alertwhite}[1]{\textbf{\textcolor{white}{#1}}}
+\newcommand{\alertyellow}[1]{\textbf{\textcolor{yellow}{#1}}}
+
+% Macros for question/answer
+\newcommand{\question}[1]{\alertblue{Q: #1}}
+\newcommand{\answer}[1]{\alertmagenta{A: #1}}
+
+% Common signal names for MIPS design
+\newcommand{\signalname}[1]{\codeviolet{#1}}
+
+\newcommand{\clk}{\signalname{clk}}
+\newcommand{\asynnrst}{\signalname{asyn\_n\_rst}}
+
+\newcommand{\instruction}{\signalname{instruction}}
+
+\newcommand{\pc}{\signalname{pc}}
+\newcommand{\nextpc}{\signalname{next\_pc}}
+
+
+\newcommand{\sa}{\signalname{sa}}
+
+\newcommand{\rs}{\signalname{rs}}
+\newcommand{\rt}{\signalname{rt}}
+\newcommand{\rd}{\signalname{rd}}
+\newcommand{\Qs}{\signalname{Qs}}
+\newcommand{\Qt}{\signalname{Qt}}
+
+\newcommand{\rfwe}{\signalname{rf\_we}}
+
+\newcommand{\aluresult}{\signalname{alu\_result}}
+\newcommand{\aluop}{\signalname{alu\_op}}
+\newcommand{\alua}{\signalname{alu\_a}}
+\newcommand{\aluasel}{\signalname{alu\_a\_sel}}
+
+\newcommand{\op}{\signalname{op}}
+\newcommand{\func}{\signalname{func}}
+
+% Macro for addressing modes
+\newcommand{\Reg}[1]{\code{R[{#1}]}\xspace}
+\newcommand{\Mem}[1]{\code{Mem[{#1}]}\xspace}
+\def\R#1{\code{R#1}\xspace}
+
+\newcommand{\Rd}{\code{Rd}\xspace}
+\newcommand{\Rs}[1]{\code{Rs#1}\xspace}
+
+%\def\Reg#1{\code{Reg[#1]}}
+%\def\Mem{#1}{\code{Mem[#1]}}
+
+% Colors for listings
+\definecolor{mygreen}{rgb}{0,0.4,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+% Commonly used commands
+\newcommand{\uA}{$\mu$A\xspace}
+\newcommand{\ie}{\emph{i.e.}\xspace}
+\newcommand{\eg}{\emph{e.g.}\xspace}
+\newcommand{\etc}{\emph{etc}\xspace}
+\newcommand{\SV}{SystemVerilog\xspace}
+
+% MIPS instruction types
+\newcommand{\Rtype}{R-Type\xspace}
+\newcommand{\Itype}{I-Type\xspace}
+\newcommand{\Jtype}{J-Type\xspace}
+
+\newcommand{\fref}[1]{Figure~\ref{#1}}
+\newcommand{\tref}[1]{Table~\ref{#1}}
+\newcommand{\aref}[1]{Appendix~\ref{#1}}
+\newcommand{\sref}[1]{Section~\ref{#1}}
+\newcommand{\eref}[1]{Equation~\eqref{#1}}
+\newcommand{\qref}[1]{Question~\ref{#1}}
+\newcommand{\lref}[1]{Listing~\ref{#1}}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+
+% Macro for creating each row of table for Addressing Modes
+% These rows are used more than once, hence their usefulness
+% Header
+\def\AddressModesHeader{\hline\textbf{Mode} & \textbf{Example} & \textbf{Meaning} \\ \hline\hline}
+
+% Immediate
+\def\Immediate{Immediate &
+               \code{ADD} \R4 , \code{3} &
+               \R4 $\leftarrow$ \R4 + \code{3} \\ \hline}
+
+% Register
+\def\Register{Register &
+              \code{ADD} \R4 , \R3 &
+              \R4 $\leftarrow$ \R4 + \R3 \\ \hline}
+
+% Absolute
+\def\Absolute{Absolute (Direct)&
+              \code{ADD} \R2 , \code{(100)} &
+              \R2 $\leftarrow$ \R2 + \Mem{100}  \\ \hline}
+
+% Register indirect
+\def\RegisterIndirect{Register indirect &
+                      \code{ADD} \R4 , \code{(\R1)} &
+                      \R4 $\leftarrow$ \R4 + \Mem{\R1} \\ \hline}
+
+% Indexed
+\def\Indexed{Indexed &
+             \code{ADD} \R3 , \code{(\R1+ \R2)} &
+             \R3 $\leftarrow$ \R3 + \Mem{\R1+ \R2}  \\ \hline}
+
+% Displacement
+\def\Displacement{Displacement &
+                  \code{ADD} \R4 , \code{100(\R1)} &
+                  \R4 $\leftarrow$ \R4 + \Mem{100+\R1} \\ \hline}
+
+% Memory indirect
+\def\MemoryIndirect{Memory indirect &
+                    \code{ADD} \R1 , \code{@(\R3)} &
+                    \R1 $\leftarrow$ \R1 + \Mem{\Mem{\R3}}  \\ \hline}
+
+% Autoincrement
+\def\Autoincrement{\multirow{2}{*}{Autoincrement} &
+                   \multirow{2}{*}{\code{ADD} \R1 , \code{(\R2)+}} &
+                   \R1 $\leftarrow$ \R1 + \Mem{R2}  \\
+               & & \R2 $\leftarrow$ \R2 + \emph{d}  \\ \hline}
+
+% Autodecrement
+\def\Autodecrement{\multirow{2}{*}{Autodecrement} &
+                   \multirow{2}{*}{\code{ADD} \R1 , \code{-(\R2)}} &
+                   \R2 $\leftarrow$ \R2 - \emph{d}  \\
+               & & \R1 $\leftarrow$ \R1 + \Mem{R2}  \\ \hline}
+
+% Scaled
+\def\Scaled{\multirow{2}{*}{Scaled} &
+            \multirow{2}{*}{\code{ADD} \R1 , \code{100(\R2)[\R3]}} &
+            \R1 $\leftarrow$ \R1 + \code{Mem[100+\R2}  \\
+           & & ~~~~~~~~~~~~+\code{ \R3*d]} \\ \hline}
+
+% Create a slide with an example of an addressing mode
+\newcommand{\AddrModeEx}[3]{
+\begin{frame}{\acs{ISA} characteristics}{Addressing modes: Example}
+  \begin{table}[htbp]
+    \centering
+      \begin{tabular}{l|l|l}
+       \AddressModesHeader
+       #1
+  	  \end{tabular}
+  \end{table}
+  \input{reg_mem_example}
+  \begin{minipage}{0.45\textwidth}
+    \vspace{-115pt}
+    \ifx&#3&%
+   % #1 is empty
+    \else
+   $d =$ #3\\
+    \fi
+    #2 = ?
+  \end{minipage}
+\end{frame}
+}

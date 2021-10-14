@@ -1,0 +1,5 @@
+{signal: [
+  {name: 'clk', wave: 'p........',},
+  {name: 'asyn_n_rst', wave: '101......',},
+  {name: 'Q', wave: 'x0.101010', data: ['A','B','C','D','E']},
+]}

@@ -1,0 +1,140 @@
+\documentclass[number=1]{exam}
+\title{Computer Architecture - TE2031}
+\date{February - June 2020}
+
+
+\newif\ifanswers
+\answerstrue % comment out to hide answers
+
+
+
+% Begin document
+\begin{document}
+
+\section*{TE2031 - \examtitle}
+List of commonly used acronyms.
+\begin{acronym}
+\acro{CISC}{Complex Instruction Set Computer}
+\acro{ISA}{Instruction Set Architecture}
+\acro{RAM}{Random Access Memory}
+\acro{RISC}{Reduced Instruction Set Computer}
+\acro{uA}[$\mu$A]{Microarchitecture}
+\acro{uP}[$\mu$P]{Microprocessor}
+\end{acronym}
+
+\begin{enumerate}
+% ========================================
+
+\item \marking{1} How many bits would you require in order to address a 4096 address \acs{RAM}?
+\answer{$\ceil{\log_{2}(4096)} = 12$}
+  
+% ========================================
+\item \marking{1} What is \acs{ISA}?
+\begin{enumerate}[label=\alph*)]
+\item A colour.
+\item A heavy metal band.
+\item A type of diet.
+\multiplechoiseanswer{\item Other. Explain your answer.}
+\end{enumerate}
+\answer{\acs{ISA} is the link between an application and the physical layer of the computer.} 
+
+% ========================================
+\item \marking{1} Describe the relation between \acs{uA} and \acs{ISA}.
+\answer{\acs{uA} is defines how the \acs{ISA} is physically implemented.}
+
+% ========================================
+\item \marking{1} What is throughput?
+\answer{The amount of tasks that we can perform in a given time. More specifically, it is the amount of bits we can output (process) in a given time. It is measured in bits/second.}
+
+% ========================================
+\item \marking{1} What is latency?
+\answer{The amount of time taken for completing a task. It is measured in seconds.}
+
+% ========================================
+\item \marking{1} What is synthesis?
+\begin{enumerate}[label=\alph*)]
+\item A TV show.
+\item A country.
+\item A political party.
+\multiplechoiseanswer{\item Other. Explain your answer.}
+\end{enumerate}
+\answer{Synthesis is the process of generating logic gates from a \acs{HDL}.} 
+
+% ========================================
+\item \marking{1} What is abstraction?
+\begin{enumerate}[label=\alph*)]
+\item A video game.
+\item A movie.
+\item A bestseller author.
+\multiplechoiseanswer{\item Other. Explain your answer.}
+\end{enumerate}
+\answer{Different representations of the same concept in order to deal with different levels of complexity that suits each designer's needs.} 
+
+% ========================================
+\item \marking{1} One \acs{ISA} may be implemented using different \uA s.
+\begin{enumerate}[label=\alph*)]
+\multiplechoiseanswer{\item True.}
+\item False.
+\end{enumerate}
+
+% ========================================
+\item \marking{1} These are some \acs{ISA} characteristics.
+\begin{enumerate}[label=\alph*)]
+\multiplechoiseanswer{\item Type and size of instructions and operands, instruction encoding, addressing modes, register types.}
+\item Instruction encoding, type and size of memory, \acs{uA} implementation, power consumption.
+\item Addressing modes, instruction encoding, \acs{uA} implementation, latency.
+\item \acs{uA} implementation, addressing modes, type and size of instructions and operands, instruction encoding,  latency.
+\end{enumerate}
+
+% ========================================
+\item \marking{1} Which of the following sentences is correct.
+\begin{enumerate}[label=\alph*)]
+\multiplechoiseanswer{\item Instruction encoding defines the \acs{uA} of the \acs{ISA}.}
+\item \acs{uA} determines the instruction encoding of an \acs{ISA}.
+\end{enumerate}
+
+% ========================================
+\item \marking{1} Which types of memory addressing might be used in iterative constructs such as \code{for} loops?
+\answer{Autoincrement and autodecrement.}
+
+% ========================================
+\item \marking{1} A single instruction encoding may be implemented using different \uA s.
+\begin{enumerate}[label=\alph*)]
+\item False.
+\multiplechoiseanswer{\item True.}
+\end{enumerate}
+
+% ========================================
+\item \marking{1} By a thorough inspection to an \acs{ISA}, we may be able to extract the following characteristics of a \acs{uP}.
+\begin{enumerate}[label=\alph*)]
+\item Whether the \acs{uP} is a \acs{CISC} or a \acs{RISC}, chip area, number of registers, types of memory addressing.
+\item Types of memory addressing, average number of clock cycles per instruction, size of main memory, power consumption.
+\multiplechoiseanswer{\item Memory usage of compiled programs, types of addressing modes.}
+\end{enumerate}
+
+% ========================================
+\item \marking{1} Define instruction encoding.
+\answer{A convention, represented by binary codes, used to distinguish between the different instructions, operands and addressing modes of an \acs{ISA}.}
+
+% ========================================
+\item \marking{1} What is the main difference between Harvard a Von-Neumann \acsp{uA}?
+\answer{A Harvard \acs{uA} uses separate buses for data and instructions, whilst a Von-Neumann \acs{uA} uses a single bus for both data and instruction.}
+
+% ========================================
+\item \marking{1} A \acs{uP} designer has made the decision to increase the number of supported instructions from 32 to 36. What does this design decision implies?
+\begin{enumerate}[label=\alph*)]
+\item The instruction encoding must be modified.\label{item:q_designimplications_correct1}
+\item The technology (size of the transistors) of the \acs{uP} must be modified.\label{item:q_designimplications_incorrect1}
+\item The size of the instruction memory must be modified.\label{item:q_designimplications_incorrect2}
+\item The \acs{uA} must be modified.\label{item:q_designimplications_correct2}
+\item All of the above.\label{item:q_designimplications_incorrect3}
+\item None of the above.\label{item:q_designimplications_incorrect4}
+\item Options \ref{item:q_designimplications_correct1}, \ref{item:q_designimplications_correct2} and \ref{item:q_designimplications_incorrect2}.\label{item:q_designimplications_incorrect5}
+\multiplechoiseanswer{\item Options \ref{item:q_designimplications_correct1} and \ref{item:q_designimplications_correct2}.}
+\item Options \ref{item:q_designimplications_correct2}, \ref{item:q_designimplications_incorrect1} and \ref{item:q_designimplications_incorrect2}.\label{item:q_designimplications_incorrect6}
+
+
+\end{enumerate}
+
+\end{enumerate}
+\end{document}

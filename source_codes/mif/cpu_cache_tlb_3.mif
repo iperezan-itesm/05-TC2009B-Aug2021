@@ -1,0 +1,25 @@
+%****************************************************%
+%  The MIF code example shown here is from the book  %
+%  Computer Principles and Design in Verilog HDL     %
+%  by Yamin Li, published by A JOHN WILEY & SONS     %
+%****************************************************%
+DEPTH = 128;         % Memory depth and width are required                 %
+WIDTH = 32;          % Enter a decimal number                              %
+ADDRESS_RADIX = HEX; % Address and value radixes are optional              %
+DATA_RADIX = HEX;    % Enter BIN, DEC, HEX, or OCT; unless                 %
+CONTENT              % otherwise specified, radixes = HEX                  %
+BEGIN
+    % physical address = 0x2000_2000                                       %
+    % test data     va = 0x0000_2000                                       %
+[0..3f]:   0; %(00002000..200020fc) 0                                      %
+40: bf800000; %(00002100) 1 01111111 00..0 fp -1                           %
+41: 40800000; %(00002104)                                                  %
+42: 40000000; %(00002108)                                                  %
+43: 41100000; %(0000210c)                                                  %
+[44..53]:  0; %(00002110..2000214c) 0                                      %
+54: 40c00000; %(00002150) 0 10000001 10..0 data[0] 4.5                     %
+55: 41c00000; %(00002154) 0 10000011 10..0 data[1]                         %
+56: 43c00000; %(00002158) 0 10000111 10..0 data[2]                         %
+57: 47c00000; %(0000215c) 0 10001111 10..0 data[3]                         %
+[58..7f]:  0; %(00002160..200021fc) 0                                      %
+END ;

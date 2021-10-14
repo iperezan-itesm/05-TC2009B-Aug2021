@@ -1,0 +1,25 @@
+%****************************************************%
+%  The MIF code example shown here is from the book  %
+%  Computer Principles and Design in Verilog HDL     %
+%  by Yamin Li, published by A JOHN WILEY & SONS     %
+%****************************************************%
+DEPTH = 32;          % Memory depth and width are required                 %
+WIDTH = 32;          % Enter a decimal number                              %
+ADDRESS_RADIX = HEX; % Address and value radixes are optional              %
+DATA_RADIX = HEX;    % Enter BIN, DEC, HEX, or OCT; unless                 %
+                     % otherwise specified, radixes = HEX                  %
+CONTENT
+BEGIN
+[0..1f] : 00000000;  % Range--Every address from 0 to 1f = 00000000        %
+     % address table for internal exceptions and external interrupt        %
+   8 : 00000030; % (20) int_entry # 0. address for interrupt               %
+   9 : 0000003c; % (24) sys_entry # 1. address for system call             %
+   a : 00000054; % (28) uni_entry # 2. address for unimpl. instruction     %
+   b : 00000068; % (2c) ovf_entry # 3. address for signed overflow         %
+  12 : 00000002; % (48) for testing overflow                               %
+  13 : 7fffffff; % (4c) 2 + max_int -> overflow                            %
+  14 : 000000a3; % (50) data[0]   0 +  a3 =  a3                            %
+  15 : 00000027; % (54) data[1]  a3 +  27 =  ca                            %
+  16 : 00000079; % (58) data[2]  ca +  79 = 143                            %
+  17 : 00000115; % (5c) data[3] 143 + 115 = 258                            %
+END ;

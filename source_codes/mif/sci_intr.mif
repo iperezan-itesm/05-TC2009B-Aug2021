@@ -1,0 +1,71 @@
+%****************************************************%
+%  The MIF code example shown here is from the book  %
+%  Computer Principles and Design in Verilog HDL     %
+%  by Yamin Li, published by A JOHN WILEY & SONS     %
+%****************************************************%
+DEPTH = 64;          % Memory depth and width are required                 %
+WIDTH = 32;          % Enter a decimal number                              %
+ADDRESS_RADIX = HEX; % Address and value radixes are optional              %
+DATA_RADIX = HEX;    % Enter BIN, DEC, HEX, or OCT; unless                 %
+                     % otherwise specified, radixes = HEX                  %
+CONTENT
+BEGIN
+[0..3f] : 00000000;  % Range--Every address from 0 to 3f = 00000000        %
+              %     reset:                                                 %
+ 0: 0800001d; % (00)    j    start             # entry on reset            %
+ 1: 00000000; % (04)    nop                    #                           %
+              %     exc_base:                  # exception handler         %
+ 2: 401a6800; % (08)    mfc0 $26, c0_cause     # read cp0 cause reg        %
+ 3: 335b000c; % (0c)    andi $27, $26, 0xc     # get exccode, 2 bits here  %
+ 4: 8f7b0020; % (10)    lw   $27, j_table($27) # get address from table    %
+ 5: 00000000; % (14)    nop                    #                           %
+ 6: 03600008; % (18)    jr   $27               # jump to that address      %
+ 7: 00000000; % (1c)    nop                    #                           %
+              %     int_entry:                 # 0. interrupt handler      %
+ c: 00000000; % (30)    nop                    # deal with interrupt here  %
+ d: 42000018; % (34)    eret                   # retrun from interrupt     %
+ e: 00000000; % (38)    nop                    #                           %
+              %     sys_entry:                 # 1. syscall handler        %
+ f: 00000000; % (3c)    nop                    # do something here         %
+              %     epc_plus4:                 #                           %
+10: 401a7000; % (40)    mfc0  $26, c0_epc      # get epc                   %
+11: 235a0004; % (44)    addi  $26, $26, 4      # epc + 4                   %
+12: 409a7000; % (48)    mtc0  $26, c0_epc      # epc <- epc + 4            %
+13: 42000018; % (4c)    eret                   # retrun from exception     %
+14: 00000000; % (50)    nop                    #                           %
+              %     uni_entry:                 # 2. unimpl. inst. handler  %
+15: 00000000; % (54)    nop                    # do something here         %
+16: 08000010; % (58)    j     epc_plus4        # return                    %
+17: 00000000; % (5c)    nop                    #                           %
+              %     ovf_entry:                 # 3. overflow handler       %
+1a: 00000000; % (68)    nop                    # do something here         %
+1b: 08000010; % (6c)    j     epc_plus4        # return                    %
+1c: 00000000; % (70)    nop                    #                           %
+              %     start:                     #                           %
+1d: 2008000f; % (74)    addi $8, $0, 0xf       # im[3:0] <- 1111           %
+1e: 40886000; % (78)    mtc0 $8, c0_status     # exc/intr enable           %
+1f: 8c080048; % (7c)    lw   $8, 0x48($0)      # try overflow exception    %
+20: 8c09004c; % (80)    lw   $9, 0x4c($0)      # caused by add             %
+              %     ov:                        #                           %
+21: 01094020; % (84)    add  $9, $9, $8        # overflow                  %
+22: 00000000; % (88)    nop                    #                           %
+              %     sys:                       #                           %
+23: 0000000c; % (8c)    syscall                # system call               %
+24: 00000000; % (90)    nop                    #                           %
+              %     unimpl:                    #                           %
+25: 0128001a; % (94)    div  $9, $8            # div, but not implemented  %
+26: 00000000; % (98)    nop                    #                           %
+              %     int:                       #                           %
+27: 34040050; % (9c)    ori  $4, $1, 0x50      # address of data[0]        %
+28: 20050004; % (a0)    addi $5, $0,  4        # counter                   %
+29: 00004020; % (a4)    add  $8, $0, $0        # sum <- 0                  %
+              %     loop:                      #                           %
+2a: 8c890000; % (a8)    lw   $9, 0($4)         # load data                 %
+2b: 20840004; % (ac)    addi $4, $4,  4        # address + 4               %
+2c: 01094020; % (b0)    add  $8, $8, $9        # sum                       %
+2d: 20a5ffff; % (b4)    addi $5, $5, -1        # counter - 1               %
+2e: 14a0fffb; % (b8)    bne  $5, $0, loop      # finish?                   %
+2f: 00000000; % (bc)    nop                    #                           %
+              %     finish:                    #                           %
+30: 08000030; % (c0)    j    finish            # dead loop                 %
+END ;

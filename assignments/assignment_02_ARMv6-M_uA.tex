@@ -1,0 +1,110 @@
+\documentclass[number=03]{assignment}
+\title{Computer Architecture - TE2003B}
+\chead{Assignment 02}
+\rhead{ARMv6-M \acs{uA}}
+%\date{February - June 2020}
+
+\newif\ifanswers
+\answerstrue % comment out to hide answers
+\newcommand{\ARMuP}{ARMv6-M\xspace}
+
+\newcommand{\deadline}{23:59 hours on Wednesday April 21st 2021}
+% Begin document
+\begin{document}
+
+\setcounter{chapter}{1}
+\chapter*{Assignment 02 \\ \ARMuP \acl{uA} design}
+\acresetall
+% ======================================
+% Objective
+% ======================================
+\section{Objectives}
+To understand the \ac{uA} of a simplified version of the \ARMuP \ac{uP}. 
+
+% ======================================
+% Deadline
+% ======================================
+\section{Deadline}
+\alertblue{\deadline}.
+% ======================================
+% Teamwork policy
+% ======================================
+\section{Teamwork policy}
+This is an individual assignment. 
+% % ======================================
+% % Pre-requisites
+% % ======================================
+% \section{Pre-requisites}
+% It is assumed that you are familiar with working with \ModelSim and \Quartus. 
+% If you require assistance, you can refer to the first assignment tutorial.
+% ======================================
+% Background
+% ======================================
+\section{Background}\label{Sec:Background}
+Assume we want to design the \ac{uA} of a simplified \ARMuP \ac{uP}.
+More specifically, we are only interested in implementing the eight instructions shown in \tref{Table:ARMv6Instructions} 
+
+\begin{table}[htbp]
+    \centering
+    \caption{Selected \ARMuP instructions.}
+    \label{Table:ARMv6Instructions}
+    \begin{tabular}{l|l|l}
+      \hline
+      Name & Syntax & Meaning \\ \hline \hline
+      Addition    & \code{adds rd, rn, rm} & \code{rd = rn + rm} \\ \hline
+      Subtraction & \code{subs rd, rn, rm} & \code{rd = rn - rm} \\  \hline
+      Bitwise AND & \code{ands rd, rn, rm} & \code{rd = rn \& rm} \\  \hline
+      Bitwise OR  & \code{orrs rd, rn, rm} & \code{rd = rn | rm} \\  \hline
+      Load        & \code{ldr  rt, rn, imm5} & \code{rt = mem[rn + imm5]} \\ \hline
+      Store       & \code{str  rt, rn, imm5} & \code{mem[rn + imm5] = rt } \\ \hline
+      Conditional branch & \code{b<cond> imm8} & \code{cond ? PC = imm8 : PC + 2}\\ \hline
+      Unconditional branch & \code{b imm8} & \code{PC = imm8}\\ \hline
+  	\end{tabular}
+  \end{table}
+
+
+So far, we have designed the \ac{uA} of \fref{Figure:ARMv6_RType_LDR_STR} for performing all R-Type instructions, as well as load and store instructions.
+
+ \begin{figure}[!htb]
+  \centering
+  \includegraphics[width=\linewidth]{ARMv6_design_RType_LDR_STR_FULL}
+  \caption{\uA for performing R-Type, load and store instructions.}
+  \label{Figure:ARMv6_RType_LDR_STR}
+\end{figure}
+ 
+
+% ======================================
+% ISA and uA
+% ====================================== 
+\newpage
+\section{\ac{uA} improvement}\label{Sec:uA_Improvement}
+In this assignment, you are required to improve the schematic of \fref{Figure:ARMv6_RType_LDR_STR}. 
+More specifically, you must include the necessary \ac{HW} to \fref{Figure:ARMv6_RType_LDR_STR} in order to perform all eight instructions specified in \tref{Table:ARMv6Instructions}.
+\ac{ISA}. 
+
+%
+\section{Deliverables and Submission instructions}\label{Sec:Deliverables}
+Prepare a \code{pdf} file including.
+\begin{enumerate}
+\item \marking{50} A schematic drawing showing your final \ac{uA} design.
+This schematic must be able to perform all instructions specified in \tref{Table:ARMv6Instructions}.
+All your signals should be correctly labelled with a relevant name and a bit width, particularly the signals that are derived from the output of the \ac{IM}.
+In order to simplify your schematic diagram, you might opt to use a name-connection scheme for control signals, as shown for \code{writeback\_sel} and \code{rtype\_sel} signals of \tref{Table:ARMv6Instructions}.
+
+\item \marking{50} An explanation of how your \ac{uA} works.
+This explanation should include:
+\begin{enumerate}
+  \item How \code{adds} instruction works.
+  \item How \code{ldr} instruction works.
+  \item How \code{b<cond>} works.
+\end{enumerate}
+The quality of the explanation is more important than its quantity!
+\end{enumerate} 
+
+\alertblue{IMPORTANT!} Since this assignment involves \ac{uA} design, there may be \alertviolet{multiple} correct answers.
+
+Submit your assignment through Canvas \alertred{no later} than \deadline. 
+\\
+Please send any questions to \href{mailto:isaac.perez.andrade@tec.mx}{isaac.perez.andrade@tec.mx}.
+\end{document}
+s
