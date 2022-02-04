@@ -1,0 +1,318 @@
+\documentclass[number=03]{assignment}
+\title{Computer Architecture - TE2031}
+\chead{Second Partial Project 3/3}
+\rhead{Complete MIPS}
+%\date{February - June 2020}
+
+\newif\ifanswers
+\answerstrue % comment out to hide answers
+
+% TOP
+\newcommand{\mipspkgfile}{\colorfilename{mips\_pkg.sv}}
+\newcommand{\mipsfile}{\colorfilename{mips.sv}}
+
+\newcommand{\rtypefile}{\colorfilename{rtype.sv}}
+\newcommand{\rtypetbfile}{\colorfilename{tb\_rtype.sv}}
+\newcommand{\rtypedofile}{\colorfilename{rtype.do}}
+
+\newcommand{\itypefile}{\colorfilename{itype.sv}}
+\newcommand{\itypetbfile}{\colorfilename{tb\_itype.sv}}
+\newcommand{\itypedofile}{\colorfilename{itype.do}}
+
+% MUX
+\newcommand{\muxfile}[1]{\colorfilename{mux\_#1x1.sv}}
+%\newcommand{\mux2x1file}[1]{\code{mux\_2x1.sv}}
+\newcommand{\muxpkgfile}{\colorfilename{mux\_pkg.sv}}
+
+% RF
+\newcommand{\rfpkgfile}{\colorfilename{rf\_pkg.sv}}
+\newcommand{\rffile}{\colorfilename{rf.sv}}
+\newcommand{\tbrffile}{\colorfilename{tb\_rf.sv}}
+\newcommand{\dorffile}{\colorfilename{rf.do}}
+
+% ALU
+\newcommand{\alupkgfile}{\colorfilename{alu\_pkg.sv}}
+\newcommand{\alufile}{\colorfilename{alu.sv}}
+\newcommand{\tbalufile}{\colorfilename{tb\_alu.sv}}
+
+% SIGN EXTENDER
+\newcommand{\sgnextfile}{\colorfilename{sgn\_ext.sv}}
+\newcommand{\tbsgnextfile}{\colorfilename{tb\_sgn\_ext.sv}}
+
+% CONTROL UNIT
+\newcommand{\controlfile}{\colorfilename{control\_unit.sv}}
+
+% DATA MEMORY
+\newcommand{\dmfile}{\colorfilename{dm.sv}}
+
+% INSTRUCTION MEMORY
+\newcommand{\imfile}{\colorfilename{im.sv}}
+
+% PROGRAM COUNTER
+\newcommand{\pcfile}{\colorfilename{program\_counter.sv}}
+
+% TESTBENCHES 
+\newcommand{\mipstbfile}{\colorfilename{tb\_mips.sv}}
+\newcommand{\multfile}{\colorfilename{tb\_multiplication.sv}}
+\newcommand{\fibonaccifile}{\colorfilename{tb\_fibonacci.sv}}
+\newcommand{\sumsquaresfile}{\colorfilename{tb\_sum\_squares.sv}}
+
+\newcommand{\mipsbinfile}{\colorfilename{mips\_tests.txt}}
+\newcommand{\multbinfile}{\colorfilename{multiplication.txt}}
+\newcommand{\fibonaccibinfile}{\colorfilename{fibonacci.txt}}
+\newcommand{\sumsquaresbinfile}{\colorfilename{sum\_squares.txt}}
+
+\newcommand{\mipsdofile}{\colorfilename{mips.do}}
+\newcommand{\multdofile}{\colorfilename{multiplication.do}}
+\newcommand{\fibonaccidofile}{\colorfilename{fibonacci.do}}
+\newcommand{\sumsquaresdofile}{\colorfilename{sum\_squares.do}}
+
+% GRADE WEIGHT
+\newcommand{\DeliveryWeight}{This delivery constitutes 5\% of your second partial final grade.}
+
+% DEADLINE
+\newcommand{\deadline}{23:59 hours on Wednesday October 28th 2020}
+
+
+\newcommand{\Fibonacci}{Fibonacci\xspace}
+
+\makesavenoteenv{tabular}
+\makesavenoteenv{table}
+% Begin document
+\begin{document}
+
+\setcounter{chapter}{1}
+\chapter*{Second Partial Project \\ Delivery 3/3 \\ Complete MIPS datapath}
+% ======================================
+% Objective
+% ======================================
+\section{Objectives}
+\begin{itemize}
+\item To implement the datapath of a custom \ac{MIPS} in \SV.
+\end{itemize}
+
+
+% ======================================
+% Final Partial weight
+% ======================================
+\section{Second partial grade weight}
+\alertblue{\DeliveryWeight}
+% ======================================
+% Deadline
+% ======================================
+\section{Deadline}
+\alertblue{\deadline}
+
+% ======================================
+% Pre-requisites
+% ======================================
+\section{Pre-requisites}
+It is assumed that you are familiar with working with \ModelSim and \Quartus. 
+If you require assistance, you can refer to the first assignment tutorial.
+It is assumed that you have completed the previous assignment for modelling the \ac{MIPS} \Rtype and \Itype instructions in \SV.
+
+%\acresetall
+\newpage
+% ======================================
+% Specifications
+% ======================================
+\section{Specifications}
+The following sections provide an overview of the design specifications for this assignment.
+
+\subsection{General specifications}\label{sec:general_specs}
+Your custom \ac{MIPS} design must comply with the following design specifications.
+%
+\begin{itemize}
+\item Instruction set based (but modified) on a standard 16-bit \ac{MIPS} \ac{uP}.
+\item Single-cycle design.
+\item Data width is 16-bits.
+\item Instruction encoding (instruction width) is 32-bits long.
+\item \ac{RF} contains 32 registers.
+\begin{itemize}
+\item \code{r0} \alertblue{must} always be 0, \ie, \code{r0} is not writeable.
+\item \code{r31} is return address.
+\end{itemize}
+\item \ac{IM} contains 256 address.
+\item \ac{DM} contains 256 address.
+\end{itemize}
+%
+
+\subsection{MIPS top-level}
+
+\tref{Table:toplevel_ports} specifies the top-level ports required for this assignment.
+%
+\begin{table}[!htb]
+\centering
+\caption{Top-level ports.}
+\label{Table:toplevel_ports}
+\begin{tabular}{l|l|c|l}
+\hline\hline
+Port name & Direction & Width & Description \\
+\hline\hline
+\code{clk}          & \code{input}  & 1  & Clock signal \\ \hline
+\code{asyn\_n\_rst} & \code{input}  & 1  & Asynchronous active-low reset \\ \hline
+ \end{tabular}
+\end{table}
+%
+
+This top-level module consists of only inputs \clk and \asynnrst and should be named \codeblue{mips}.
+There are no outputs in this top-level module.
+You must include the \ac{IM} and the \ac{PC} as part of your \ac{MIPS} design.
+
+\subsection{List of instructions}\label{sec:Instructions}
+\tref{Table:Instructions} shows the minimum set of instructions that your \ac{MIPS} should support.
+You may support additional instructions that you deem necessary. 
+
+\begin{table}[!htb]
+\centering
+\caption{Required \ac{MIPS} instructions.}
+\label{Table:Instructions}
+\begin{tabular}{l|l|l}
+\hline\hline
+ Instruction & Syntax & Meaning \\
+ \hline\hline
+ \multicolumn{3}{c}{\Rtype}\\\hline
+ \code{ADD}  & \code{ADD rd, rs, rt}  & \code{Reg[rd] $\leftarrow$ Reg[rs] + Reg[rt]}\\ \hline
+    \code{SUB}  & \code{SUB rd, rs, rt}  & \code{Reg[rd] $\leftarrow$ Reg[rs] - Reg[rt]}\\ \hline
+    \code{NAND} & \code{NAND rd, rs, rt}  & \code{Reg[rd] $\leftarrow$ $\sim$(Reg[rs] \& Reg[rt])}\\ \hline
+    \code{NOR}  & \code{NOR rd, rs, rt}  & \code{Reg[rd] $\leftarrow$ $\sim$(Reg[rs] | Reg[rt])}\\ \hline
+    \code{XNOR} & \code{XNOR rd, rs, rt} & \code{Reg[rd] $\leftarrow$ $\sim$(Reg[rs] \^{} Reg[rt])}\\ \hline
+    \code{AND}  & \code{AND rd, rs, rt}  & \code{Reg[rd] $\leftarrow$ Reg[rs] \& Reg[rt]}\\ \hline
+    \code{OR}   & \code{OR rd, rs, rt}   & \code{Reg[rd] $\leftarrow$ Reg[rs] | Reg[rt]}\\ \hline
+    \code{XOR}  & \code{XOR rd, rs, rt}  & \code{Reg[rd] $\leftarrow$ Reg[rs] \^{} Reg[rt]}\\ \hline
+    \code{SLL}  & \code{SLL rd, rs, sa} & \code{Reg[rd] $\leftarrow$ Reg[rt] $<<$ sa}\\ \hline
+    \code{SRL}  & \code{SLL rd, rs, sa} & \code{Reg[rd] $\leftarrow$ Reg[rt] $>>$ sa}\\ \hline
+    \code{SLA}  & \code{SLL rd, rs, sa} & \code{Reg[rd] $\leftarrow$ Reg[rt] $<<<$ sa}\\ \hline
+    \code{SRA}  & \code{SLL rd, rs, sa} & \code{Reg[rd] $\leftarrow$ Reg[rt] $>>>$ sa}\\ \hline
+    \codeblue{JR} & \codeblue{JR rs}  & \codeblue{PC $\leftarrow$ Reg[rs]} \\
+    \hline     
+    \hline
+    \multicolumn{3}{c}{\Itype}\\\hline
+    \code{ADDI} & \code{ADDI rt, rs, imm} & \code{Reg[rt] $\leftarrow$ Reg[rs] + imm}    \\\hline
+    \code{SUBI} & \code{SUBI rt, rs, imm} & \code{Reg[rt] $\leftarrow$ Reg[rs] - imm}    \\\hline
+    \code{NANDI} & \code{ANDI rt, rs, imm} & \code{Reg[rt] $\leftarrow$ $\sim$(Reg[rs] \& imm)}   \\\hline
+    \code{NORI}  & \code{ORI  rt, rs, imm} & \code{Reg[rt] $\leftarrow$ $\sim$(Reg[rs] | imm)}    \\\hline
+    \code{XNORI} & \code{XORI rt, rs, imm} & \code{Reg[rt] $\leftarrow$ $\sim$(Reg[rs] \^{} imm)} \\\hline
+    \code{ANDI} & \code{ANDI rt, rs, imm} & \code{Reg[rt] $\leftarrow$ Reg[rs] \& imm}   \\\hline
+    \code{ORI}  & \code{ORI  rt, rs, imm} & \code{Reg[rt] $\leftarrow$ Reg[rs] | imm}    \\\hline
+    \code{XORI} & \code{XORI rt, rs, imm} & \code{Reg[rt] $\leftarrow$ Reg[rs] \^{} imm} \\\hline
+    \code{LUI}  & \code{LUI rt, imm}      & \code{Reg[rt] $\leftarrow$ \{imm[7:0], 8'b0\}}   \\\hline
+    \code{LLI}  & \code{LLI rt, imm}      & \code{Reg[rt] $\leftarrow$ \{8'b0, imm[7:0]\}}  \\\hline
+    \code{LI}  & \code{LI rt, imm}      & \code{Reg[rt] $\leftarrow$ imm}   \\\hline
+    \code{LW}   & \code{LW  rt, imm(rs)}  & \code{Reg[rt] $\leftarrow$ Mem[Reg[rs]+imm]} \\\hline
+    \code{SW}   & \code{SWR  rt, imm(rs)} & \code{Mem[Reg[rs]+imm] $\leftarrow$ Reg[rt]} \\\hline
+    \multirow{2}{*}{\code{BEQ}} & \multirow{2}{*}{\code{BEQ rt, rs, imm}}  & \code{if (Reg[rs] == Reg[rt])}  \\
+    & & \code{then PC $\leftarrow$ imm} \\\hline
+    \multirow{2}{*}{\code{BNE}} & \multirow{2}{*}{\code{BNEQ rt, rs, imm}}  & \code{if (Reg[rs] != Reg[rt])}  \\
+    & & \code{then PC $\leftarrow$ imm} \\\hline
+    \multirow{2}{*}{\code{BLEZ}} & \multirow{2}{*}{\code{BLEZ rs, imm}}  & \code{if (Reg[rs] <= 0)}  \\
+    & & \code{then PC $\leftarrow$ imm} \\\hline
+    \multirow{2}{*}{\code{BGTZ}} & \multirow{2}{*}{\code{BGTZ rs, imm}}  & \code{if (Reg[rs] > 0)}  \\
+    & & \code{then PC $\leftarrow$ imm} \\
+    \hline
+    \hline
+     \multicolumn{3}{c}{\Jtype}\\\hline
+    \codeblue{J}   & \codeblue{J imm} & \codeblue{PC $\leftarrow$ imm}\\\hline 
+    \multirow{2}{*}{\codeblue{JAL}} & \multirow{2}{*}{\codeblue{JAL imm}}  & \codeblue{Reg[31] $\leftarrow$ PC+1}  \\
+    & & \codeblue{PC $\leftarrow$ imm} \\\hline 
+ \end{tabular}
+\end{table}
+
+Note that instructions highlighted in \codeblue{blue} correspond to the new instructions to be added to your existing \code{itype} design.
+
+\newpage
+\subsection{\SV design and testbench files}\label{sec:SV_files}
+The minimum required \SV design files and testbenches are listed below.
+You may decide to create new \SV modules and files in order to create different hierarchy levels. 
+For example, you may decide to create a \SV module specifically for instruction decoding inside the control unit.
+\begin{itemize}
+\item Desing units.
+\begin{itemize}
+  \item \mipspkgfile. Package file common to all design files. You must declare all the necessary parameters and data types in this file.
+  \item \mipsfile. Top-level \ac{MIPS} module.
+  \item \alufile. \ac{ALU} module description.
+  \item \rffile. \ac{RF} module description.
+  \item \sgnextfile. Zero/sign extender module description.
+  \item \muxfile{2}. 2x1 \ac{MUX} module description.
+  \item \muxfile{4}. 4x1 \ac{MUX} module description (if needed).
+  \item \muxfile{8}. 8x1 \ac{MUX} module description (if needed).
+  \item \controlfile. Control unit module description.
+  \item \dmfile. \ac{DM} module description.
+  \item \imfile. \ac{IM} module description.
+  \item \pcfile. \ac{PC} module description.
+  \end{itemize}
+\item Testbenches.
+  \begin{itemize}
+  \item \mipstbfile. Top-level \ac{MIPS} testbench. This testbench tests all possible \ac{MIPS} instructions. 
+  \end{itemize}
+\item \ac{IM} initialization file. This files may be in either binary or hexadecimal format.
+  \begin{itemize}
+  \item \mipsbinfile. File for initializing \ac{IM} in \mipstbfile. 
+  \end{itemize}
+\end{itemize}
+
+% ======================================
+% Grading criteria
+% ====================================== 
+\section{Grading criteria}\label{sec:Grading}
+The following grading criteria will be considered.
+
+\begin{enumerate}
+\item \alertblue{The correct functionality of your designs.}
+I will use my own testbenches in order to automatically stress your designs and verify that they perform the tasks according to the specifications. 
+For example, I will try different values for the parameters in your designs and I expect them to still perform according to the specifications.
+This is why it is paramount that you follow the name convention specified for file names and port names.
+Moreover, it is important that your designs and testbenches compile in \ModelSim without warnings and without errors.
+\begin{enumerate}
+\item \alertred{Each \acs{RTL} warning will deduct 5\% of your final project grade.}
+\item \alertred{Your maximum grade for this assignment will automatically drop to 50/100 should \ModelSim trigger a compilation or simulation error.}
+\end{enumerate}
+
+\item \alertblue{The quality of your testbenches.}
+Even though I will use my own testbenches, I expect you to consider a thorough and concious set of test scenarios.
+In this way, you should be able to spot any mismatches between the expected results and the actual results provided by your designs.
+\item \alertblue{Your designs must be synthesized in \Quartus without latches, without \acs{RTL} warnings and without errors.}
+\begin{enumerate}
+\item \alertred{Each \acs{RTL} warning will deduct 5\% of your final project grade.}
+\item \alertred{Your maximum grade for this assignment will automatically drop to 50/100 should \Quartus trigger a synthesis error or generate unwanted latches.}
+\end{enumerate}
+
+\begin{sloppypar}
+The only warnings that will be tolerated are those that are not related to the \acs{RTL} itself. 
+Examples of such warnings are:
+\begin{itemize}
+\item \code{Warning (18236): Number of processors has not been specified which may cause overloading on shared machines. Set the global assignment} \linebreak\code{NUM\_PARALLEL\_PROCESSORS in your QSF to an appropriate value for best performance.}
+\item \code{Warning (13046): Tri-state node(s) do not directly drive top-level pin(s).}
+\item \code{Warning (292013): Feature LogicLock is only available with a valid subscription license. You can purchase a software subscription to gain full access to this feature.}
+\item \code{Warning (15714): Some pins have incomplete I/O assignments. Refer to the I/O Assignment Warnings report for details.}
+\end{itemize}
+\end{sloppypar}
+Remember that a design is not useful if it can't be synthesized.
+\end{enumerate}
+
+
+% ======================================
+% Deliverables and Submission instructions
+% ====================================== 
+\section{Deliverables and Submission instructions}\label{sec:Deliverables}
+Prepare a single \code{zip} file containing the following items.
+\begin{enumerate}
+\item \alertred{All your design, testbench and memory initialization files.} 
+You may follow the list provided in \sref{sec:SV_files} as a reference.
+You may have created additional \SV modules as stated in \sref{sec:SV_files}.
+If that's the case, please include them in your \code{zip} file.
+\item \mipsdofile. A \ModelSim script for compiling and simulating your design. This will be used for testing the \Jtype instructions, along with the \Rtype and \Itype instructions. You may use several \code{.do} files for different tasks, for example, one \code{.do} for creating a library, one for compiling, one for simulating, one for adding waveforms and one for running all tasks at once.
+  \item A computer-drawn schematic diagram showing your final \ac{uA} of your \ac{MIPS} design. 
+    \begin{enumerate}
+      \item This \ac{uA} must support all \Rtype, \Itype and \Jtype \ac{MIPS} instructions. 
+      \item All signals must be clearly labelled, including bus widths.
+     \end{enumerate}
+  \item Design synthesis. A screenshot of the \Quartus-generated \ac{RTL} view.
+\end{enumerate}
+
+
+Submit your assignment through Canvas \alertred{no later} than \deadline.
+Only one submission per team is necessary.
+\\
+Please send any questions to \href{mailto:isaac.perez.andrade@tec.mx}{isaac.perez.andrade@tec.mx}.
+\end{document}

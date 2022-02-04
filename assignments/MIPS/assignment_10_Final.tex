@@ -1,0 +1,439 @@
+\documentclass[number=03]{assignment}
+\title{Computer Architecture - TE2031}
+\chead{Final Project}
+\rhead{MIPS programs}
+%\date{February - June 2020}
+
+\newif\ifanswers
+\answerstrue % comment out to hide answers
+
+% TOP
+\newcommand{\mipspkgfile}{\colorfilename{mips\_pkg.sv}}
+\newcommand{\mipsfile}{\colorfilename{mips.sv}}
+
+\newcommand{\rtypefile}{\colorfilename{rtype.sv}}
+\newcommand{\rtypetbfile}{\colorfilename{tb\_rtype.sv}}
+\newcommand{\rtypedofile}{\colorfilename{rtype.do}}
+
+\newcommand{\itypefile}{\colorfilename{itype.sv}}
+\newcommand{\itypetbfile}{\colorfilename{tb\_itype.sv}}
+\newcommand{\itypedofile}{\colorfilename{itype.do}}
+
+% MUX
+\newcommand{\muxfile}[1]{\colorfilename{mux\_#1x1.sv}}
+%\newcommand{\mux2x1file}[1]{\code{mux\_2x1.sv}}
+\newcommand{\muxpkgfile}{\colorfilename{mux\_pkg.sv}}
+
+% RF
+\newcommand{\rfpkgfile}{\colorfilename{rf\_pkg.sv}}
+\newcommand{\rffile}{\colorfilename{rf.sv}}
+\newcommand{\tbrffile}{\colorfilename{tb\_rf.sv}}
+\newcommand{\dorffile}{\colorfilename{rf.do}}
+
+% ALU
+\newcommand{\alupkgfile}{\colorfilename{alu\_pkg.sv}}
+\newcommand{\alufile}{\colorfilename{alu.sv}}
+\newcommand{\tbalufile}{\colorfilename{tb\_alu.sv}}
+
+% SIGN EXTENDER
+\newcommand{\sgnextfile}{\colorfilename{sgn\_ext.sv}}
+\newcommand{\tbsgnextfile}{\colorfilename{tb\_sgn\_ext.sv}}
+
+% CONTROL UNIT
+\newcommand{\controlfile}{\colorfilename{control\_unit.sv}}
+
+% DATA MEMORY
+\newcommand{\dmfile}{\colorfilename{dm.sv}}
+
+% INSTRUCTION MEMORY
+\newcommand{\imfile}{\colorfilename{im.sv}}
+
+% PROGRAM COUNTER
+\newcommand{\pcfile}{\colorfilename{program\_counter.sv}}
+
+% TESTBENCHES 
+\newcommand{\mipstbfile}{\colorfilename{tb\_mips.sv}}
+\newcommand{\multfile}{\colorfilename{tb\_multiplication.sv}}
+\newcommand{\fibonaccifile}{\colorfilename{tb\_fibonacci.sv}}
+\newcommand{\sumsquaresfile}{\colorfilename{tb\_sum\_squares.sv}}
+
+\newcommand{\mipsbinfile}{\colorfilename{mips\_tests.txt}}
+\newcommand{\multbinfile}{\colorfilename{multiplication.txt}}
+\newcommand{\fibonaccibinfile}{\colorfilename{fibonacci.txt}}
+\newcommand{\sumsquaresbinfile}{\colorfilename{sum\_squares.txt}}
+
+\newcommand{\mipsdofile}{\colorfilename{mips.do}}
+\newcommand{\multdofile}{\colorfilename{multiplication.do}}
+\newcommand{\fibonaccidofile}{\colorfilename{fibonacci.do}}
+\newcommand{\sumsquaresdofile}{\colorfilename{sum\_squares.do}}
+
+% GRADE WEIGHT
+\newcommand{\DeliveryWeight}{This delivery constitutes 25\% of your final grade.}
+
+% DEADLINE
+\newcommand{\deadline}{23:59 hours on Thursday June 4th 2020}
+
+
+\newcommand{\Fibonacci}{Fibonacci\xspace}
+
+\makesavenoteenv{tabular}
+\makesavenoteenv{table}
+% Begin document
+\begin{document}
+
+\setcounter{chapter}{1}
+\chapter*{Final Project \\ MIPS}
+% ======================================
+% Objective
+% ======================================
+\section{Objectives}
+\begin{itemize}
+\item To implement the datapath of a custom \ac{MIPS} in \SV.  
+\item To implement a \ac{MIPS} assembler program in order to multiply two signed numbers.
+\item To implement a \ac{MIPS} assembler program in order to calculate the first $n$-th \Fibonacci numbers.
+\item To implement a \ac{MIPS} assembler program in order to calculate the first $n$-th element in a sum-of-square series.
+\end{itemize}
+
+
+% ======================================
+% Final Partial weight
+% ======================================
+\section{Final grade weight}
+\alertblue{\DeliveryWeight}
+% ======================================
+% Deadline
+% ======================================
+\section{Deadline}
+\alertblue{\deadline}
+
+% ======================================
+% Teamwork policy
+% ======================================
+\section{Teamwork policy}
+This is a group assignment. 
+% ======================================
+% Pre-requisites
+% ======================================
+\section{Pre-requisites}
+It is assumed that you are familiar with working with \ModelSim and \Quartus. 
+If you require assistance, you can refer to the first assignment tutorial.
+It is assumed that you have completed the previous assignment for modelling the \ac{MIPS} \Rtype and \Itype instructions in \SV.
+
+%\acresetall
+\newpage
+% ======================================
+% Background
+% ======================================
+\section{Background}
+The following sections provide some background on the tasks you are required to complete for this assignment.
+
+\subsection{Fibonacci sequence}
+A \Fibonacci number $F_{n}$ is defined as the sum of the two previous \Fibonacci numbers as defined in \eref{Equation:Fibonacci}
+
+\begin{equation}
+\label{Equation:Fibonacci}
+F_{n} = F_{n-1} + F_{n-2}
+\end{equation}
+
+with $n>=2$ and $F_{0} = 0$ and $F_{1} = 1$.
+
+Moreover, the $n$-th order \Fibonacci sequence is defined as $\{F_{0}, F_{1}, F_{2}, \dots, F_{n-2},  F_{n-1}, F_{n}\}$. 
+For example, the $5$-th order \Fibonacci sequence is $\{F_{0}, F_{1}, F_{2}, F_{3},  F_{4}, F_{5}\} = \{0, 1, 1, 2, 3, 5\}$.
+
+\subsection{Sum of squares}
+The $n$-th term in a sum of square series is defined as in \eref{Equation:SumSquare}
+\begin{equation}
+\label{Equation:SumSquare}
+S_{n} = \sum_{i=1}^{n}i^{2} = 1^{2} + 2^{2} + 3^{2} + \dots + (n-2)^{2} + (n-1)^{2} + n^{2}
+\end{equation}
+
+Moreover, the $n$-th order sum of square sequence is defined as $\{S_{1}, S_{2}, \dots, S_{n-2},  S_{n-1}, S_{n}\}$.
+For example, the $5$-th order sum of square sequence is $\{S_{1}, S_{2}, S_{3},  S_{4}, S_{5}\} = \{1, 5, 14, 30, 55\}$.
+
+% ======================================
+% Specifications
+% ======================================
+\section{Project specifications}
+The following sections provide an overview of the design specifications for this assignment.
+
+\subsection{General specifications}\label{sec:general_specs}
+Your custom \ac{MIPS} design must comply with the following design specifications.
+%
+\begin{itemize}
+\item Instruction set based (but modified) on a standard 16-bit \ac{MIPS} \ac{uP}.
+\item Single-cycle design.
+\item Data width is 16-bits.
+\item Instruction encoding (instruction width) is 32-bits long.
+\item \ac{RF} contains 32 registers.
+\begin{itemize}
+\item \code{r0} \alertblue{must} always be 0, \ie, \code{r0} is not writeable.
+\item \code{r31} is return address.
+\end{itemize}
+\item \ac{IM} contains 256 address.
+\item \ac{DM} contains 256 address.
+\end{itemize}
+%
+
+\newpage
+\subsection{MIPS top-level}
+
+\tref{Table:toplevel_ports} specifies the top-level ports required for this assignment.
+%
+\begin{table}[!htb]
+\centering
+\caption{Top-level ports.}
+\label{Table:toplevel_ports}
+\begin{tabular}{l|l|c|l}
+\hline\hline
+Port name & Direction & Width & Description \\
+\hline\hline
+\code{clk}          & \code{input}  & 1  & Clock signal \\ \hline
+\code{asyn\_n\_rst} & \code{input}  & 1  & Asynchronous active-low reset \\ \hline
+ \end{tabular}
+\end{table}
+%
+
+This top-level module consists of only inputs \clk and \asynnrst.
+There are no outputs in this top-level module.
+You must include the \ac{IM} and the \ac{PC} as part of your \ac{MIPS} design.
+
+\subsection{List of instructions}\label{sec:Instructions}
+\tref{Table:Instructions} shows the minimum set of instructions that your \ac{MIPS} should support.
+You may support additional instructions that you deem necessary. 
+
+
+\begin{table}[!htb]
+\centering
+\caption{Required \ac{MIPS} instructions.}
+\label{Table:Instructions}
+\begin{tabular}{l|l|l}
+\hline\hline
+ Instruction & Syntax & Meaning \\
+ \hline\hline
+ \multicolumn{3}{c}{\Rtype}\\\hline
+ \code{ADD}  & \code{ADD rd, rs, rt}  & \code{Reg[rd] $\leftarrow$ Reg[rs] + Reg[rt]}\\ \hline
+    \code{SUB}  & \code{SUB rd, rs, rt}  & \code{Reg[rd] $\leftarrow$ Reg[rs] - Reg[rt]}\\ \hline
+    \code{NAND} & \code{NAND rd, rs, rt}  & \code{Reg[rd] $\leftarrow$ $\sim$(Reg[rs] \& Reg[rt])}\\ \hline
+    \code{NOR}  & \code{NOR rd, rs, rt}  & \code{Reg[rd] $\leftarrow$ $\sim$(Reg[rs] | Reg[rt])}\\ \hline
+    \code{XNOR} & \code{XNOR rd, rs, rt} & \code{Reg[rd] $\leftarrow$ $\sim$(Reg[rs] \^{} Reg[rt])}\\ \hline
+    \code{AND}  & \code{AND rd, rs, rt}  & \code{Reg[rd] $\leftarrow$ Reg[rs] \& Reg[rt]}\\ \hline
+    \code{OR}   & \code{OR rd, rs, rt}   & \code{Reg[rd] $\leftarrow$ Reg[rs] | Reg[rt]}\\ \hline
+    \code{XOR}  & \code{XOR rd, rs, rt}  & \code{Reg[rd] $\leftarrow$ Reg[rs] \^{} Reg[rt]}\\ \hline
+    \code{SLL}  & \code{SLL rd, rs, sa} & \code{Reg[rd] $\leftarrow$ Reg[rt] $<<$ sa}\\ \hline
+    \code{SRL}  & \code{SLL rd, rs, sa} & \code{Reg[rd] $\leftarrow$ Reg[rt] $>>$ sa}\\ \hline
+    \code{SLA}  & \code{SLL rd, rs, sa} & \code{Reg[rd] $\leftarrow$ Reg[rt] $<<<$ sa}\\ \hline
+    \code{SRA}  & \code{SLL rd, rs, sa} & \code{Reg[rd] $\leftarrow$ Reg[rt] $>>>$ sa}\\ \hline
+    \code{JR} & \code{JR rs}  & \code{PC $\leftarrow$ Reg[rs]} \\
+    \hline     
+    \hline
+    \multicolumn{3}{c}{\Itype}\\\hline
+    \code{ADDI} & \code{ADDI rt, rs, imm} & \code{Reg[rt] $\leftarrow$ Reg[rs] + imm}    \\\hline
+    \code{SUBI} & \code{SUBI rt, rs, imm} & \code{Reg[rt] $\leftarrow$ Reg[rs] - imm}    \\\hline
+    \code{NANDI} & \code{ANDI rt, rs, imm} & \code{Reg[rt] $\leftarrow$ $\sim$(Reg[rs] \& imm)}   \\\hline
+    \code{NORI}  & \code{ORI  rt, rs, imm} & \code{Reg[rt] $\leftarrow$ $\sim$(Reg[rs] | imm)}    \\\hline
+    \code{XNORI} & \code{XORI rt, rs, imm} & \code{Reg[rt] $\leftarrow$ $\sim$(Reg[rs] \^{} imm)} \\\hline
+    \code{ANDI} & \code{ANDI rt, rs, imm} & \code{Reg[rt] $\leftarrow$ Reg[rs] \& imm}   \\\hline
+    \code{ORI}  & \code{ORI  rt, rs, imm} & \code{Reg[rt] $\leftarrow$ Reg[rs] | imm}    \\\hline
+    \code{XORI} & \code{XORI rt, rs, imm} & \code{Reg[rt] $\leftarrow$ Reg[rs] \^{} imm} \\\hline
+    \code{LUI}  & \code{LUI rt, imm}      & \code{Reg[rt] $\leftarrow$ \{imm[7:0], 8'b0\}}   \\\hline
+    \code{LLI}  & \code{LLI rt, imm}      & \code{Reg[rt] $\leftarrow$ \{8'b0, imm[7:0]\}}  \\\hline
+    \code{LI}  & \code{LI rt, imm}      & \code{Reg[rt] $\leftarrow$ imm}   \\\hline
+    \code{LW}   & \code{LW  rt, imm(rs)}  & \code{Reg[rt] $\leftarrow$ Mem[Reg[rs]+imm]} \\\hline
+    \code{SW}   & \code{SWR  rt, imm(rs)} & \code{Mem[Reg[rs]+imm] $\leftarrow$ Reg[rt]} \\\hline
+    \multirow{2}{*}{\code{BEQ}} & \multirow{2}{*}{\code{BEQ rt, rs, imm}}  & \code{if (Reg[rs] == Reg[rt])}  \\
+    & & \code{then PC $\leftarrow$ imm} \\\hline
+    \multirow{2}{*}{\code{BNEQ}} & \multirow{2}{*}{\code{BNEQ rt, rs, imm}}  & \code{if (Reg[rs] != Reg[rt])}  \\
+    & & \code{then PC $\leftarrow$ imm} \\\hline
+    \multirow{2}{*}{\code{BZ}} & \multirow{2}{*}{\code{BZ rt, rs, imm}}  & \code{if (Reg[rs] == 0)}  \\
+    & & \code{then PC $\leftarrow$ imm} \\\hline
+    \multirow{2}{*}{\code{BNEG}} & \multirow{2}{*}{\code{BNEG rt, rs, imm}}  & \code{if (Reg[rs] < 0)}  \\
+    & & \code{then PC $\leftarrow$ imm} \\
+    \hline
+    \hline
+     \multicolumn{3}{c}{\Jtype}\\\hline
+    \code{J}   & \code{J imm} & \code{PC $\leftarrow$ imm}\\\hline 
+    \multirow{2}{*}{\code{JAL}} & \multirow{2}{*}{\code{JAL imm}}  & \code{Reg[31] $\leftarrow$ PC+1}  \\
+    & & \code{PC $\leftarrow$ imm} \\\hline 
+ \end{tabular}
+\end{table}
+
+\subsection{MIPS test programs}\label{sec:MIPS_programs}
+The following sections describe three \ac{MIPS} test programs that you must complete for this assignment.
+All three programs should be designed using assembly language with the instructions you have designed in your custom \ac{MIPS}.
+You must follow the mnemonic convention for each instruction in \tref{Table:Instructions}. 
+
+\subsubsection{Multiplication}
+You are required to design an assembly program for multiplying 2 signed numbers.
+For this part of the assignment you must consider that the two operands $A$ and $B$ are placed in \code{Mem[0]} and \code{Mem[1]}. 
+As a result of this, your testbench must initialize your \ac{DM} with the two operands. 
+The result of the signed multiplication must be stored in \code{Mem[2]}.
+
+\subsubsection{\Fibonacci sequence}
+You are required to design an assembly program for calculating the $n$-th order \Fibonacci sequence.
+For this part of the assignment, you must consider that the value of $n$ is stored in \code{Mem[255]}. 
+As a result of this, your testbench must initialize \code{Mem[255]} with the value of $n$.
+The $n+1$ elements of the \Fibonacci sequence must be stored from \code{Mem[0]} to \code{Mem[$n$]}. 
+For example, for the $5$-th order \Fibonacci sequence, the results must be stored in \code{Mem[0], Mem[1], Mem[2], Mem[3], Mem[4], Mem[5]}.
+
+\subsubsection{Sum of squares sequence}
+You are required to design an assembly program for calculating the $n$-th order sum of squares sequence.
+For this part of the assignment, you must consider that the value of $n$ is stored in \code{Mem[0]}. 
+As a result of this, your testbench must initialize \code{Mem[0]} with the value of $n$.
+The $n$ elements of the sum of squares sequence must be stored from \code{Mem[1]} to \code{Mem[$n$]}. 
+For example, for the $5$-th order sum of squares sequence, the results must be stored in \code{Mem[1], Mem[2], Mem[3], Mem[4], Mem[5]}.
+
+\subsection{\SV design and testbench files}\label{sec:SV_files}
+The minimum required \SV design files and testbenches are listed below.
+You may decide to create new \SV modules and files in order to create different hierarchy levels. 
+For example, you may decide to create a \SV module specifically for instruction decoding inside the control unit.
+\begin{itemize}
+\item Desing units.
+\begin{itemize}
+  \item \mipspkgfile. Package file common to all design files. You must declare all the necessary parameters and data types in this file.
+  \item \mipsfile. Top-level \ac{MIPS} module.
+  \item \alufile. \ac{ALU} module description.
+  \item \rffile. \ac{RF} module description.
+  \item \sgnextfile. Zero/sign extender module description.
+  \item \muxfile{2}. 2x1 \ac{MUX} module description.
+  \item \muxfile{4}. 4x1 \ac{MUX} module description (if needed).
+  \item \muxfile{8}. 8x1 \ac{MUX} module description (if needed).
+  \item \controlfile. Control unit module description.
+  \item \dmfile. \ac{DM} module description.
+  \item \imfile. \ac{IM} module description.
+  \item \pcfile. \ac{PC} module description.
+  \end{itemize}
+\item Testbenches.
+  \begin{itemize}
+  \item \mipstbfile. Top-level \ac{MIPS} testbench. This testbench tests all possible \ac{MIPS} instructions. 
+  \item \multfile. Testbench for testing the multiplication program.
+  \item \fibonaccifile. Testbench for testing the \Fibonacci program.
+  \item \sumsquaresfile. Testbench for testing the sum of squares program.
+  \end{itemize}
+\item \ac{IM} initialization files. These files may be in either binary or hexadecimal format.
+  \begin{itemize}
+  \item \mipsbinfile. File for loading \ac{IM} in \mipstbfile. 
+  \item \multbinfile. File for loading \ac{IM} in \multfile. 
+  \item \fibonaccibinfile. File for loading \ac{IM} in \fibonaccifile.
+  \item \sumsquaresbinfile. File for loading \ac{IM} in \sumsquaresfile.
+  \end{itemize}
+\end{itemize}
+
+\section{Report}\label{sec:Report}
+You are required to submit a report, which must include the following sections.
+
+\begin{enumerate}
+  \item \alertblue{Introduction}. An introduction to the report and to the project.
+  \item \alertblue{\ac{MIPS} \ac{ISA} design}. An explanation of your \ac{MIPS} \ac{ISA}. This section must include:
+  \begin{itemize}
+    \item A table showing your instruction encoding.
+  This must include \alertred{ALL} your supported instructions.
+    \item An explanation of your design choices and design flow.
+    \item A computer-drawn schematic diagram showing your final \ac{uA} of your \ac{MIPS} design. 
+    \begin{enumerate}
+      \item This \ac{uA} must support all \Rtype, \Itype and \Jtype \ac{MIPS} instructions. 
+      \item All signals must be clearly labelled, including bus widths.
+     \end{enumerate}
+  \end{itemize}
+  \item \alertblue{Design synthesis.} You must include a screenshot of the generated \ac{RTL} in \Quartus.
+  \item \alertblue{Test programs.} For each test program, a table similar to \tref{Table:Testcode} explaining your test files (\code{.txt}) line by line. 
+  This explanation must include the binary or hexadecimal value loaded into your \ac{IM} and the test you are providing.
+  %
+  \begin{table}[!htb]
+    \centering
+	\caption{Example of test file in your report.}
+	\label{Table:Testcode}
+	\begin{tabular}{l|l|l}
+	  Line & Hex code & Meaning \\
+	  \hline\hline
+	  1 & \code{FEDCBA98} & \code{ADDI r1, r2, -16} \\\hline
+	  2 & \code{76543210} & \code{BNE r3, r4, 123} \\\hline 
+	\end{tabular}
+  \end{table}
+  %
+  
+  For each test program, you must also state the limitation of your program. For example, you must indicate the maximum value of $n$ that your \ac{MIPS} \ac{uA} supports for the Fibonacci and sum of squares programs. Similarly, you must indicate the maximum and minimum possible results for your multiplication program.
+  This section must also include screenshots of your \ModelSim simulation for each test program.
+  
+  \item \alertblue{Improvements and future work.} Mention any potential improvements to you \ac{MIPS} \ac{ISA} and/or \ac{uA}.
+  \item \alertblue{Conclusions.} Concluding remarks on what you've learned in this project.
+    \item \alertblue{References.} List of citations in \href{http://journals.ieeeauthorcenter.ieee.org/wp-content/uploads/sites/7/IEEE-Reference-Guide.pdf}{IEEE} format used for the report.
+\end{enumerate}
+
+\alertred{NOTE.} There is no restriction on the number of pages. 
+However, quality is prioritized over quantity. 
+A lengthy but meaningless report will result in a lower score than a shorter but more meaningful report.
+
+% ======================================
+% Grading criteria
+% ====================================== 
+\section{Grading criteria}\label{sec:Grading}
+The grade of this project is divided as presented in \tref{Table:Grading}.
+  %
+  \begin{table}[!htb]
+    \centering
+	\caption{Grading criteria.}
+	\label{Table:Grading}
+	\begin{tabular}{l|r}
+	\hline
+	  Rubric & Percentage \\
+	  \hline\hline
+	  \Jtype implementation  \& testbench & 5\% \\\hline
+	  Multiplication program              & 25\% \\\hline
+	  Fibonacci program                   & 25\% \\\hline
+	  Sum of squares program              & 25\% \\\hline
+	  Report                              & 20\% \\\hline\hline
+	  TOTAL                               & 100\% \\  
+	\end{tabular}
+  \end{table}
+  %
+ 
+In addition to the grading criteria specified in  \tref{Table:Grading}, I will consider the following aspects.
+\begin{enumerate}
+\item \alertblue{The correct functionality of your designs.}
+I will use my own testbenches in order to automatically stress your designs and verify that they perform the tasks according to the specifications. 
+For example, I will try different values for the parameters in your designs and I expect them to still perform according to the specifications.
+This is why it is paramount that you follow the name convention specified for file names and port names.
+Moreover, it is important that your designs and testbenches compile in \ModelSim without warnings and without errors.
+\alertred{Each \acs{RTL} warning will deduct 5\% of your final project grade.}
+\alertred{Your maximum grade for this assignment will automatically drop to 50/100 should \ModelSim trigger a compilation or simulation error.}
+\item \alertblue{The quality of your testbenches.}
+Even though I will use my own testbenches, I expect you to consider a thorough and concious set of test scenarios.
+In this way, you should be able to spot any mismatches between the expected results and the actual results provided by your designs.
+\item \alertblue{Your designs must be synthesized in \Quartus without latches, without \acs{RTL} warnings and without errors.}
+\alertred{Each \acs{RTL} warning will deduct 5\% of your final project grade.}
+\alertred{Your maximum grade for this assignment will automatically drop to 50/100 should \Quartus trigger a synthesis error or generate unwanted latches.}
+\begin{sloppypar}
+The only warnings that will be tolerated are those that are not related to the \acs{RTL} itself. 
+Examples of such warnings are:
+\begin{itemize}
+\item \code{Warning (18236): Number of processors has not been specified which may cause overloading on shared machines. Set the global assignment} \linebreak\code{NUM\_PARALLEL\_PROCESSORS in your QSF to an appropriate value for best performance.}
+\item \code{Warning (13046): Tri-state node(s) do not directly drive top-level pin(s).}
+\item \code{Warning (292013): Feature LogicLock is only available with a valid subscription license. You can purchase a software subscription to gain full access to this feature.}
+\item \code{Warning (15714): Some pins have incomplete I/O assignments. Refer to the I/O Assignment Warnings report for details.}
+\end{itemize}
+\end{sloppypar}
+Remember that a design is not useful if it can't be synthesized.
+\end{enumerate}
+
+
+% ======================================
+% Deliverables and Submission instructions
+% ====================================== 
+\section{Deliverables and Submission instructions}\label{sec:Deliverables}
+Prepare a single \code{zip} file containing all your design, testbench and test program files. 
+You may follow the list provided in \sref{sec:SV_files} as a reference.
+You may have created additional \SV modules as stated in \sref{sec:SV_files}.
+If that's the case, please include them in your \code{zip} file.
+In addition to the design, testbench and test program files, you must include the following \ModelSim scripts.
+\begin{enumerate}
+\item \mipsdofile. \ModelSim script for compiling and simulating your design. This will be used for testing the \Jtype instructions, along with the \Rtype and \Itype instructions.
+\item \multdofile. \ModelSim script for compiling and simulating your design using the multiplication test program.
+\item \fibonaccidofile. \ModelSim script for compiling and simulating your design using the Fibonacci test program.
+\item \sumsquaresdofile. \ModelSim script for compiling and simulating your design using the sum of squares test program.
+\end{enumerate}
+
+Submit your assignment through Blackboard \alertred{no later} than \deadline.
+Only one submission per team is necessary.
+\\
+Please send any questions to \href{mailto:isaac.perez.andrade@tec.mx}{isaac.perez.andrade@tec.mx}.
+\end{document}

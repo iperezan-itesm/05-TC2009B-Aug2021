@@ -99,7 +99,7 @@
 
 \rfoot{Page \thepage \hspace{1pt} of \pageref{LastPage}}
 %\chead{Final Project}
-\lhead{Digital Design}
+\lhead{Computer Architecture}
 %\lhead[\rm\thepage]{\fancyplain{}{\sl{\rightmark}}}
 %\rhead[\fancyplain{}{\sl{\leftmark}}]{\rm\thepage}
 %\chead{}\lfoot{}\rfoot{}\cfoot{}

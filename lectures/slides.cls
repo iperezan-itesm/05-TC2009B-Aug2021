@@ -91,25 +91,4 @@ Department of Computer Science\\}
 
 
 % Location of your graphics files
-\graphicspath{{../../../../figures/}}   
-
-
-
-
-
-
-
-
-
-
-
-
-%\RequirePackage{fancyhdr}
-
-%\AtBeginDocument{%
-%\lhead[\docauthorname]{\docauthorname}%
-%\chead[\docdate]{\docdate}%
-%\rhead[]{\docname}%
-%\pagestyle{fancy}%
-%}
-%\endinput
+\graphicspath{{../../../../figures/}}

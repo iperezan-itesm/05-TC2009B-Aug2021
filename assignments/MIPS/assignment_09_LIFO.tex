@@ -1,0 +1,199 @@
+\documentclass[number=03]{assignment}
+\title{Computer Architecture - TE2031}
+\chead{Individual Design \& Research Project}
+\rhead{Stacks in ISAs}
+%\date{February - June 2020}
+
+\newif\ifanswers
+\answerstrue % comment out to hide answers
+
+% TOP
+\newcommand{\lifofile}{\colorfilename{lifo.sv}}
+\newcommand{\lifotbfile}{\colorfilename{tb\_lifo.sv}}
+\newcommand{\lifodofile}{\colorfilename{lifo.do}}
+
+% GRADE WEIGHT
+\newcommand{\DeliveryWeight}{This delivery constitutes 10\% of your final grade.}
+
+% DEADLINE
+\newcommand{\deadline}{23:59 hours on Thursday June 4th 2020}
+
+\makesavenoteenv{tabular}
+\makesavenoteenv{table}
+% Begin document
+\begin{document}
+
+\setcounter{chapter}{1}
+\chapter*{Individual design and research project \\ Stacks in ISAs}
+% ======================================
+% Objective
+% ======================================
+\section{Objectives}
+\begin{enumerate}
+\item To implement a stack data structure in \SV.
+\item To investigate uses of stack structures in modern \acp{ISA}.
+\end{enumerate}
+
+
+% ======================================
+% Final Partial weight
+% ======================================
+\section{Final grade weight}
+\alertblue{\DeliveryWeight}
+% ======================================
+% Deadline
+% ======================================
+\section{Deadline}
+\alertblue{\deadline}
+
+% ======================================
+% Teamwork policy
+% ======================================
+\section{Teamwork policy}
+This is an individual assignment. 
+% ======================================
+% Pre-requisites
+% ======================================
+\section{Pre-requisites}
+It is assumed that you are familiar with working with \ModelSim and \Quartus. 
+If you require assistance, you can refer to the first assignment tutorial.
+
+\acresetall
+\newpage
+% ======================================
+% Specifications
+% ======================================
+\section{Stack design specifications}
+This is an individual design and research assignment.
+As a result of this, only the minimum details will be provided in this document.
+
+\tref{Table:toplevel_ports} specifies the top-level ports required for this assignment.
+%
+\begin{table}[!htb]
+\centering
+\caption{Top-level ports.}
+\label{Table:toplevel_ports}
+\begin{tabular}{l|l|c|l}
+\hline\hline
+Port name & Direction & Width & Description \\
+\hline\hline
+\code{clk}          & \code{input}  & 1  & Clock signal \\ \hline
+\code{asyn\_n\_rst} & \code{input}  & 1  & Asynchronous active-low reset \\ \hline
+\code{push}         & \code{input}  & 1  & Active-high write request     \\ \hline
+\code{pop}          & \code{input}  & 1  & Active-high read request     \\ \hline
+\code{data\_in}     & \code{input}  & \code{DATA\_WIDTH}  & Input data  \\\hline
+\code{data\_out}    & \code{output} & \code{DATA\_WIDTH}  & Output data  \\\hline
+\code{full}         & \code{output} & 1  & Indicates stack is full   \\\hline
+\code{empty}        & \code{output} & 1  & Indicates stack is empty   \\\hline \hline
+\end{tabular}
+\end{table}
+%
+
+When \code{push} in \tref{Table:toplevel_ports} is asserted, \code{data\_in} should be written into the stack only if the stack is not full.
+Similarly, when \code{pop} in \tref{Table:toplevel_ports} is asserted, \code{data\_out} should be updated with the last input data only if the stack is not empty.
+Push operations have priority over pop operations.
+
+The depth of your stack must be controlled by the parameter \code{STACK\_DEPTH}.
+
+\subsection{\SV design and testbench files}\label{sec:SV_files}
+The required \SV design files and testbenches are listed below.
+\begin{itemize}
+  \item \lifofile. Top-level stack module.
+  \item \lifotbfile. Top-level testbench.
+  \item \lifodofile. \ModelSim compile and simulation script.
+\end{itemize}
+
+\section{Report}\label{sec:Report}
+You are required to submit a report, which must include the following sections.
+
+\begin{enumerate}
+  \item \alertblue{Introduction}. An introduction to the report and to the project.
+  \item \alertblue{Stack use in \acp{ISA}}. This section must answer the following questions.
+  \begin{enumerate}
+    \item What is a stack?
+    \item How does a stack-based \ac{ISA} work?
+    \begin{enumerate}
+    \item What differences can you spot between a stack-based \ac{ISA} and the \ac{ISA} used in your \ac{MIPS} project?
+    \end{enumerate}
+    \item Give an example of a modern stack-based \ac{ISA}.
+    \begin{enumerate}
+    \item Name of \ac{ISA}.
+    \item General \ac{ISA} characteristics such as, type(s) of addressing modes, type(s) of instruction encoding, which instructions use the stack? etc.
+    \end{enumerate}
+    \item For which purpose could you use a stack in the \ac{ISA} used in your \ac{MIPS} project? 
+  \end{enumerate}
+  \item \alertblue{Stack design, simulation and synthesis.} You must include
+  \begin{enumerate}
+  \item A brief explanation of your \SV design.
+  \item A screenshot of your \ModelSim simulation.
+  \item A screenshot of the generated \ac{RTL} in \Quartus.
+  \end{enumerate}
+  \item \alertblue{Conclusions.} Concluding remarks on what you've learned in this project.
+  \item \alertblue{References.} List of citations in \href{http://journals.ieeeauthorcenter.ieee.org/wp-content/uploads/sites/7/IEEE-Reference-Guide.pdf}{IEEE} format used for the report.
+\end{enumerate}
+
+\alertred{NOTE.} There is no restriction on the number of pages. 
+However, quality is prioritized over quantity. 
+A lengthy but meaningless report will result in a lower score than a shorter but more meaningful report.
+
+% ======================================
+% Grading criteria
+% ====================================== 
+\section{Grading criteria}\label{sec:Grading}
+The grade of this project is divided as presented in \tref{Table:Grading}.
+  %
+  \begin{table}[!htb]
+    \centering
+	\caption{Grading criteria.}
+	\label{Table:Grading}
+	\begin{tabular}{l|r}
+	\hline
+	  Rubric & Percentage \\
+	  \hline\hline
+	  Stack in \SV  \& testbench & 50\% \\\hline
+	  Report                     & 50\% \\\hline\hline
+	  TOTAL                      & 100\% \\  
+	\end{tabular}
+  \end{table}
+  %
+ 
+In addition to the grading criteria specified in  \tref{Table:Grading}, I will consider the following aspects.
+\begin{enumerate}
+\item \alertblue{The correct functionality of your designs.}
+I will use my own testbenches in order to automatically stress your designs and verify that they perform the tasks according to the specifications. 
+For example, I will try different values for the parameters in your designs and I expect them to still perform according to the specifications.
+This is why it is paramount that you follow the name convention specified for file names and port names.
+Moreover, it is important that your designs and testbenches compile in \ModelSim without warnings and without errors.
+\alertred{Each \acs{RTL} warning will deduct 5\% of your project grade.}
+\alertred{Your maximum grade for this assignment will automatically drop to 50/100 should \ModelSim trigger a compilation or simulation error.}
+\item \alertblue{The quality of your testbenches.}
+Even though I will use my own testbenches, I expect you to consider a thorough and concious set of test scenarios.
+In this way, you should be able to spot any mismatches between the expected results and the actual results provided by your designs.
+\item \alertblue{Your designs must be synthesized in \Quartus without latches, without \acs{RTL} warnings and without errors.}
+\alertred{Each \acs{RTL} warning will deduct 5\% of your project grade.}
+\alertred{Your maximum grade for this assignment will automatically drop to 50/100 should \Quartus trigger a synthesis error or generate unwanted latches.}
+\begin{sloppypar}
+The only warnings that will be tolerated are those that are not related to the \acs{RTL} itself. 
+Examples of such warnings are:
+\begin{itemize}
+\item \code{Warning (18236): Number of processors has not been specified which may cause overloading on shared machines. Set the global assignment} \linebreak\code{NUM\_PARALLEL\_PROCESSORS in your QSF to an appropriate value for best performance.}
+\item \code{Warning (13046): Tri-state node(s) do not directly drive top-level pin(s).}
+\item \code{Warning (292013): Feature LogicLock is only available with a valid subscription license. You can purchase a software subscription to gain full access to this feature.}
+\item \code{Warning (15714): Some pins have incomplete I/O assignments. Refer to the I/O Assignment Warnings report for details.}
+\end{itemize}
+\end{sloppypar}
+Remember that a design is not useful if it can't be synthesized.
+\end{enumerate}
+
+
+% ======================================
+% Deliverables and Submission instructions
+% ====================================== 
+\section{Deliverables and Submission instructions}\label{sec:Deliverables}
+Prepare a single \code{zip} file containing all your design, testbench, script and report files as indicated in \sref{sec:SV_files} and \sref{sec:Report}.
+
+Submit your assignment through Blackboard \alertred{no later} than \deadline.
+Only one submission per team is necessary.
+\\
+Please send any questions to \href{mailto:isaac.perez.andrade@tec.mx}{isaac.perez.andrade@tec.mx}.
+\end{document}

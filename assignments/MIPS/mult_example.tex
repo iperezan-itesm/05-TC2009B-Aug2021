@@ -1,0 +1,41 @@
+\documentclass[number=02]{assignment}
+\title{Computer Architecture - TE2031}
+\date{February - June 2020}
+
+
+\newif\ifanswers
+\answerstrue % comment out to hide answers
+\usepackage{multirow}
+% Begin document
+\begin{document}
+
+\section*{Multiplication example}
+Assume the following initial conditions.
+\begin{table}[!h]
+\centering
+\begin{tabular}{rll}
+ & \code{Mem[0] = A} & \\
+ & \code{Mem[1] = B} & \\
+ & \code{Mem[2] = 0} & \\
+ 
+\end{tabular}
+\end{table}
+
+A simple multiplication algorithm is as follows.
+\begin{table}[!h]
+\centering
+\begin{tabular}{rl|l}
+ & Instruction & Meaning \\
+ \hline
+ & \code{LWI r1, (0)} & \code{r1 $\leftarrow$ Mem[0] (r1 = A)} \\
+ & \code{LWI r2, (1)} & \code{r2 $\leftarrow$ Mem[1] (r2 = B)} \\
+ & \code{LWI r3, (2)} & \code{r3 $\leftarrow$ Mem[2] (r3 = 0)} \\
+addition: & \code{ADD r3, r3, r1} & \code{r3 $\leftarrow$ r3 + r1} \\
+          & \code{SUBI r2, r2, r1} & \code{r2 $\leftarrow$ r2 - 1} \\
+          & \code{BNE r2, r0, addition} & B == 0? \\
+          & \code{SWI r3, (2)} & \code{Mem[2] $\leftarrow$ r3}\\
+end:      & \code{J end} & \code{Finish program}    
+\end{tabular}
+\end{table}
+
+\end{document}

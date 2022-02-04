@@ -36,3 +36,8 @@
 */*/*/*/work/
 */*/*/*/*/work/
 */*/*/*/*/*/work/
+assignments/MIPS/build/*.aux
+assignments/MIPS/build/*.out
+assignments/MIPS/build/*.log
+assignments/MIPS/build/*.gz
+source_codes/s/cortex-m0p/*
